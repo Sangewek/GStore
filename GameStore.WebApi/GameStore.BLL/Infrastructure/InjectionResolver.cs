@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using GameStore.BLL.Interfaces;
+using GameStore.BLL.Services;
 using GameStore.DAL.EF;
 using GameStore.DAL.Interfaces;
 using GameStore.DAL.Interfaces.Repositories;
@@ -26,6 +27,10 @@ namespace GameStore.BLL.Infrastructure
             service.AddScoped<IDataContext, DataContext>();
             service.AddDbContext<DataContext>(options =>
                 options.UseSqlServer("Data Source=GameStoreDB"));
+
+            service.AddScoped<IGameService, GameService>();
+            service.AddScoped<ICommentService, CommentService >();
+
         }
     }
 }

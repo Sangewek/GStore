@@ -9,7 +9,7 @@ namespace GameStore.BLL.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Body { get; set; }
-        public BLGame Game { get; set; }
-        public BLComment ParentComment { get; set; }
+        public int GameId { get; set; }
+        public int? ParentCommentId { get; set; }
     }
 }

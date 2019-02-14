@@ -11,7 +11,7 @@ namespace GameStore.DAL.EF.Configuration
     {
         public void Configure(EntityTypeBuilder<Comment> builder)
         {
-            builder.HasOne(s => s.Game).WithMany(s => s.Comments);
+            builder.HasOne(s => s.Game).WithMany(s => s.Comments).HasForeignKey(x=>x.GameId);
         }
     }
 }

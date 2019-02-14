@@ -13,6 +13,10 @@ namespace GameStore.DAL.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Body { get; set; }
+        public int GameId { get; set; }
+        [ForeignKey("ParentComment")]
+        public int? ParentCommentId { get; set; }
+
         public virtual Game Game { get; set; }
         public virtual Comment ParentComment { get; set; }
     }

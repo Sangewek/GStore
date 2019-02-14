@@ -21,8 +21,23 @@ namespace GameStore.WebApi.Controllers
         }
         
         [HttpGet]
-        public async Task Get()
+        [Route("{gameId}")]
+        public async Task<IEnumerable<BLComment>> Get(int gameId)
         {
+            return await _commentService.GetCommentsForPost(gameId);
+        }
+
+        [HttpPost]
+        public async Task Post([FromBody]BLComment comment)
+        {
+            await _commentService.Add(comment);
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task Delete(int id)
+        {
+             await _commentService.Delete(id);
         }
 
     }

@@ -42,5 +42,17 @@ namespace GameStore.WebApi.Controllers
            return await _gameService.Get(id);
         }
 
+        [HttpGet]
+        public async Task<IEnumerable<BLGame>> Get()
+        {
+            return await _gameService.GetAll();
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task Delete(int id)
+        {
+            await _gameService.Delete(id);
+        }
     }
 }

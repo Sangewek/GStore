@@ -10,7 +10,7 @@ namespace GameStore.BLL.Models
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public BLPublisher Publisher { get; set; }
+        public int PublisherId { get; set; }
         public ICollection<BLComment> Comments { get; set; }
         public ICollection<BLGenre> Genres { get; set; }
         public ICollection<BLPlatform> Platforms { get; set; }

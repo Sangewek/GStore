@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GameStore.BLL.Interfaces;
+using GameStore.BLL.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,7 +24,6 @@ namespace GameStore.WebApi.Controllers
         [HttpGet]
         public async Task Get()
         {
-
         }
     }
 }

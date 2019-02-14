@@ -9,7 +9,7 @@ namespace GameStore.BLL.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public BLGenre BaseGenre { get; set; }
+        public int BaseGenreId { get; set; }
 
         public ICollection<BLGame> Games { get; set; }
         public ICollection<BLGenre> SubGenres { get; set; }

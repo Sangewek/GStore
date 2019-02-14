@@ -28,8 +28,8 @@ namespace GameStore.BLL.Services
 
         public async Task<IEnumerable<BLComment>> GetCommentsForPost(int id)
         {
-           return AutoMapper.Mapper.Map<IEnumerable<Comment>,IEnumerable<BLComment>>(
-               await _repository.SelectAllAsync(x=>x.Game.Id==id));
+            IEnumerable<Comment> comments = await _repository.SelectAllAsync(x => x.GameId == id);
+           return AutoMapper.Mapper.Map<IEnumerable<Comment>,IEnumerable<BLComment>>(comments              );
         }
 
         public async Task Delete(int id)
