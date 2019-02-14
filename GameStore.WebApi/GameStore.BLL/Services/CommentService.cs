@@ -24,6 +24,7 @@ namespace GameStore.BLL.Services
         public async Task Add(BLComment comment)
         {
              await _repository.InsertAsync(AutoMapper.Mapper.Map<BLComment, Comment>(comment));
+             await UnitOfWork.SaveAsync();
         }
 
         public async Task<IEnumerable<BLComment>> GetCommentsForPost(int id)
@@ -35,6 +36,7 @@ namespace GameStore.BLL.Services
         public async Task Delete(int id)
         {
             await _repository.DeleteAsync(id);
+            await UnitOfWork.SaveAsync();
            }
 
     }

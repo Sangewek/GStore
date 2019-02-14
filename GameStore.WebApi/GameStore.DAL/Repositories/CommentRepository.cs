@@ -10,7 +10,7 @@ namespace GameStore.DAL.Repositories
 {
     public class CommentRepository: GenericRepository<Comment>,ICommentRepository
     {
-        public CommentRepository(DataContext db) : base(db)
+        public CommentRepository(IDataContext db) : base(db)
         {
         }
     }

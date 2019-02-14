@@ -10,7 +10,7 @@ namespace GameStore.DAL.Repositories
 {
     public class PublisherRepository: GenericRepository<Publisher>,IPublisherRepository
     {
-        public PublisherRepository(DataContext db) : base(db)
+        public PublisherRepository(IDataContext db) : base(db)
         {
         }
     }

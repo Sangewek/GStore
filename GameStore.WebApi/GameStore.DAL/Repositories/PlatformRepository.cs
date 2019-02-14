@@ -10,7 +10,7 @@ namespace GameStore.DAL.Repositories
 {
     public class PlatformRepository: GenericRepository<Platform>,IPlatformRepository
     {
-        public PlatformRepository(DataContext db) : base(db)
+        public PlatformRepository(IDataContext db) : base(db)
         {
         }
     }

@@ -26,7 +26,7 @@ namespace GameStore.BLL.Infrastructure
             service.AddScoped<IUnitOfWork, UnitOfWork>();
             service.AddScoped<IDataContext, DataContext>();
             service.AddDbContext<DataContext>(options =>
-                options.UseSqlServer("Data Source=GameStoreDB"));
+                options.UseLazyLoadingProxies().UseSqlServer("Data Source=GameStoreDB"));
 
             service.AddScoped<IGameService, GameService>();
             service.AddScoped<ICommentService, CommentService >();

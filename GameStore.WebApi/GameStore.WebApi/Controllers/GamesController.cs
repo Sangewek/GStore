@@ -54,5 +54,12 @@ namespace GameStore.WebApi.Controllers
         {
             await _gameService.Delete(id);
         }
+
+        [HttpGet]
+        [Route("genres/{id}")]
+        public async Task<IEnumerable<BLGame>> GetByGenres(int id)
+        {
+           return await _gameService.GetGamesByGenre(id);
+        }
     }
 }

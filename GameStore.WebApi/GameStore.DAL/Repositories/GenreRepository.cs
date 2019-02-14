@@ -10,7 +10,7 @@ namespace GameStore.DAL.Repositories
 {
     public class GenreRepository : GenericRepository<Genre>,IGenreRepository
     {
-        public GenreRepository(DataContext db) : base(db)
+        public GenreRepository(IDataContext db) : base(db)
         {
         }
     }

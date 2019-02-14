@@ -23,11 +23,13 @@ namespace GameStore.BLL.Services
         public async Task Add(BLGame game)
         {
             await _repository.InsertAsync(AutoMapper.Mapper.Map<BLGame, Game>(game));
+            await UnitOfWork.SaveAsync();
         }
 
         public async Task Update(BLGame game)
         {
             await _repository.UpdateAsync(AutoMapper.Mapper.Map<BLGame, Game>(game));
+            await UnitOfWork.SaveAsync();
         }
 
         public async Task<BLGame> Get(int id)
@@ -38,7 +40,8 @@ namespace GameStore.BLL.Services
 
         public async Task<IEnumerable<BLGame>> GetGamesByGenre(int id)
         {
-           return AutoMapper.Mapper.Map<IEnumerable<Game>, IEnumerable<BLGame>>(await _repository.SelectAllAsync(x => x.GameGenres.Where(xx => xx.GenreId == id) != null));
+           return AutoMapper.Mapper.Map<IEnumerable<Game>, IEnumerable<BLGame>>(
+               await _repository.SelectAllAsync(x => x.GameGenres.Where(xx => xx.GenreId == id) != null));
         }
 
         public async Task<IEnumerable<BLGame>> GetGamesByPlatform(int id)
@@ -55,6 +58,7 @@ namespace GameStore.BLL.Services
         public async Task Delete(int id)
         {
             await _repository.DeleteAsync(id);
+            await UnitOfWork.SaveAsync();
         }
     }
 }
