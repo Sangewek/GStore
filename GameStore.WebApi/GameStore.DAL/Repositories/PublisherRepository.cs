@@ -16,9 +16,5 @@ namespace GameStore.DAL.Repositories
         {
 
         }
-        public async Task<Publisher> GetPublisherWithGamesAsync(int id)
-        {
-            return await Db.Set<Publisher>().Include(x => x.Games).FirstAsync(x => x.Id == id);
-        }
     }
 }

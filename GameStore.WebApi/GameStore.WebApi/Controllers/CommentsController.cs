@@ -48,7 +48,7 @@ namespace GameStore.WebApi.Controllers
         [Route("{id}")]
         public async Task Delete(int id)
         {
-             await _commentService.DeleteAsync(id);
+            await _commentService.DeleteAsync(id);
         }
 
     }

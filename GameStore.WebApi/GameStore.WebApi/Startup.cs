@@ -6,10 +6,12 @@ using GameStore.BLL.Interfaces;
 using GameStore.BLL.Infrastructure;
 using GameStore.BLL.Mapper;
 using GameStore.BLL.Services;
+using GameStore.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
 using Newtonsoft.Json;
 
@@ -35,6 +37,12 @@ namespace GameStore.WebApi
                     Description = "ASP.NET Core Web API"
                 });
             });
+
+            services.AddMvc(
+                config =>
+                {
+                    config.Filters.Add(new ActionFilters());
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +57,8 @@ namespace GameStore.WebApi
             {
                 config.AddProfile<MapToBLModels>();
             });
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

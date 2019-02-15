@@ -38,7 +38,7 @@ namespace GameStore.BLL.Services
 
         public async Task<IEnumerable<BLGenre>> GetGenresByGameAsync(int id)
         {
-            Game game = await UnitOfWork.Games.GetGameGenres(id);
+            Game game = await UnitOfWork.Games.SelectByIdAsync(id,x=>x.GameGenres);
             List<Genre> genres = new List<Genre>();
 
             foreach (var genre in game.GameGenres)
@@ -49,7 +49,7 @@ namespace GameStore.BLL.Services
 
         public async Task<IEnumerable<BLGame>> GetGamesByPlatformAsync(int id)
         {
-            Platform platform = await UnitOfWork.Platforms.GetPlatformWithGames(id);
+            Platform platform = await UnitOfWork.Platforms.SelectByIdAsync(id, x => x.GamePlatform);
             List<Game> games = new List<Game>();
 
             foreach (var game in platform.GamePlatform)

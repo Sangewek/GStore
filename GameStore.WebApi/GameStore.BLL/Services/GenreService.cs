@@ -35,7 +35,7 @@ namespace GameStore.BLL.Services
 
         public async Task<IEnumerable<BLGame>> GetGamesByGenreAsync(int id)
         {
-            Genre genre = await UnitOfWork.Genres.GetGenreWithGames(id);
+            Genre genre = await UnitOfWork.Genres.SelectByIdAsync(id,x=>x.GameGenres);
             List<Game> games = new List<Game>();
 
             foreach (var game in genre.GameGenres)

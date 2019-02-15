@@ -45,7 +45,7 @@ namespace GameStore.BLL.Services
         }
         public async Task<IEnumerable<BLGame>> GetGamesByPublisherAsync(int id)
         {
-            Publisher publisher = await UnitOfWork.Publishers.GetPublisherWithGamesAsync(id);
+            Publisher publisher = await UnitOfWork.Publishers.SelectByIdAsync(id,x=>x.Games);
             return AutoMapper.Mapper.Map<IEnumerable<Game>,IEnumerable<BLGame>>(publisher.Games);
         }
     }
