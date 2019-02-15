@@ -12,52 +12,61 @@ using GameStore.DAL.Interfaces;
 
 namespace GameStore.BLL.Services
 {
-    public class GameService : GenericService<Game>,IGameService
+    public class GameService : BaseService,IGameService
     {
-        private readonly IGameRepository _repository;
-        public GameService(IUnitOfWork unitOfWork, IGameRepository gameRepository) : base( unitOfWork)
+        public GameService(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-            this._repository = gameRepository;
         }
 
-        public async Task Add(BLGame game)
+        public async Task AddAsync(BLGame game)
         {
-            await _repository.InsertAsync(AutoMapper.Mapper.Map<BLGame, Game>(game));
+            await UnitOfWork.Games.InsertAsync(AutoMapper.Mapper.Map<BLGame, Game>(game));
             await UnitOfWork.SaveAsync();
         }
 
-        public async Task Update(BLGame game)
+        public async Task UpdateAsync(BLGame game)
         {
-            await _repository.UpdateAsync(AutoMapper.Mapper.Map<BLGame, Game>(game));
+            await UnitOfWork.Games.UpdateAsync(AutoMapper.Mapper.Map<BLGame, Game>(game));
             await UnitOfWork.SaveAsync();
         }
 
-        public async Task<BLGame> Get(int id)
+        public async Task<BLGame> GetAsync(int id)
         {
-            Game game = await _repository.SelectByIdAsync(id);
+            Game game = await UnitOfWork.Games.SelectByIdAsync(id);
             return AutoMapper.Mapper.Map<Game,BLGame>(game);
         }
 
-        public async Task<IEnumerable<BLGame>> GetGamesByGenre(int id)
+        public async Task<IEnumerable<BLGenre>> GetGenresByGameAsync(int id)
         {
-           return AutoMapper.Mapper.Map<IEnumerable<Game>, IEnumerable<BLGame>>(
-               await _repository.SelectAllAsync(x => x.GameGenres.Where(xx => xx.GenreId == id) != null));
+            Game game = await UnitOfWork.Games.GetGameGenres(id);
+            List<Genre> genres = new List<Genre>();
+
+            foreach (var genre in game.GameGenres)
+                genres.Add(await UnitOfWork.Genres.SelectByIdAsync(genre.GenreId));
+
+            return AutoMapper.Mapper.Map<IEnumerable<Genre>, IEnumerable<BLGenre>>(genres);
         }
 
-        public async Task<IEnumerable<BLGame>> GetGamesByPlatform(int id)
+        public async Task<IEnumerable<BLGame>> GetGamesByPlatformAsync(int id)
         {
-            return AutoMapper.Mapper.Map<IEnumerable<Game>, IEnumerable<BLGame>>(await _repository.SelectAllAsync(x => x.GamePlatform.Where(xx => xx.PlatformId == id) != null));
+            Platform platform = await UnitOfWork.Platforms.GetPlatformWithGames(id);
+            List<Game> games = new List<Game>();
+
+            foreach (var game in platform.GamePlatform)
+                games.Add(await UnitOfWork.Games.SelectByIdAsync(game.GameId));
+
+            return AutoMapper.Mapper.Map<IEnumerable<Game>, IEnumerable<BLGame>>(games);
         }
 
-        public async Task<IEnumerable<BLGame>> GetAll()
+        public async Task<IEnumerable<BLGame>> GetAllAsync()
         {
             return AutoMapper.Mapper.Map < IEnumerable <Game>,IEnumerable<BLGame>>(
-                await _repository.SelectAllAsync());
+                await UnitOfWork.Games.SelectAllAsync());
         }
 
-        public async Task Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            await _repository.DeleteAsync(id);
+            await UnitOfWork.Games.DeleteAsync(id);
             await UnitOfWork.SaveAsync();
         }
     }

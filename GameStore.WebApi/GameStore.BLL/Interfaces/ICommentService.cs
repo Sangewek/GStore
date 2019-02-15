@@ -8,8 +8,8 @@ namespace GameStore.BLL.Interfaces
 {
     public interface ICommentService:IService
     {
-        Task Add(BLComment comment);
-        Task<IEnumerable<BLComment>> GetCommentsForPost(int id);
-        Task Delete(int id);
+        Task AddAsync(BLComment comment);
+        Task<IEnumerable<BLComment>> GetCommentsForPostAsync(int id);
+        Task DeleteAsync(int id);
     }
 }

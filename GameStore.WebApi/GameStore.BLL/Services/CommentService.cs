@@ -12,30 +12,27 @@ using GameStore.DAL.Interfaces;
 
 namespace GameStore.BLL.Services
 {
-    public class CommentService: GenericService<Comment>,ICommentService
+    public class CommentService: BaseService,ICommentService
     {
-        private readonly ICommentRepository _repository;
-
-        public CommentService(IUnitOfWork unitOfWork, ICommentRepository repository) : base(unitOfWork)
+        public CommentService(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-            this._repository = repository;
         }
 
-        public async Task Add(BLComment comment)
+        public async Task AddAsync(BLComment comment)
         {
-             await _repository.InsertAsync(AutoMapper.Mapper.Map<BLComment, Comment>(comment));
+             await UnitOfWork.Comments.InsertAsync(AutoMapper.Mapper.Map<BLComment, Comment>(comment));
              await UnitOfWork.SaveAsync();
         }
 
-        public async Task<IEnumerable<BLComment>> GetCommentsForPost(int id)
+        public async Task<IEnumerable<BLComment>> GetCommentsForPostAsync(int id)
         {
-            IEnumerable<Comment> comments = await _repository.SelectAllAsync(x => x.GameId == id);
+            IEnumerable<Comment> comments = await UnitOfWork.Comments.SelectAllAsync(x => x.GameId == id);
            return AutoMapper.Mapper.Map<IEnumerable<Comment>,IEnumerable<BLComment>>(comments              );
         }
 
-        public async Task Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            await _repository.DeleteAsync(id);
+            await UnitOfWork.Comments.DeleteAsync(id);
             await UnitOfWork.SaveAsync();
            }
 

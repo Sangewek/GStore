@@ -8,17 +8,16 @@ using GameStore.DAL.Models;
 
 namespace GameStore.BLL.Services
 {
-    public abstract class GenericService<TEntity>:IService where TEntity:class  
+    public abstract class BaseService:IService
     {
-
-        private bool _isDisposed;
-
         protected readonly IUnitOfWork UnitOfWork;
 
-        protected GenericService(IUnitOfWork unitOfWork)
+        protected BaseService(IUnitOfWork unitOfWork)
         {
             UnitOfWork = unitOfWork;
         }
+
+        private bool _isDisposed;
 
         protected void Dispose(bool disposing)
         {

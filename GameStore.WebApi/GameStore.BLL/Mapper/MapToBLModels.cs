@@ -12,22 +12,21 @@ namespace GameStore.BLL.Mapper
     {
         public MapToBLModels()
         {
-            CreateMap<BLComment, Comment>().ReverseMap().MaxDepth(3);
+            CreateMap<BLComment, Comment>().MaxDepth(1).ReverseMap();
 
-            CreateMap<Publisher, BLPublisher>().ReverseMap();
+            CreateMap<Publisher, BLPublisher>().MaxDepth(1).ReverseMap();
 
-            CreateMap<Genre, BLGenre>().ForMember(dto => dto.Games,
-                opt => opt.MapFrom(x => x.GameGenres.Select(y => y.Game).ToList())).MaxDepth(3)
+            CreateMap<Genre, BLGenre>()
+            // .ForMember(dto => dto.Games, opt => opt.MapFrom(x => x.GameGenres.Select(y => y.Game).ToList())).MaxDepth(1)
             .ReverseMap();
 
-            CreateMap<Platform, BLPlatform>().ForMember(dto => dto.Games,
-            opt => opt.MapFrom(x => x.GamePlatform.Select(y => y.Game).ToList())).MaxDepth(3)
+            CreateMap<Platform, BLPlatform>()
+            //.ForMember(dto => dto.Games,opt => opt.MapFrom(x => x.GamePlatform.Select(y => y.Game).ToList())).MaxDepth(1)
             .ReverseMap();
 
-            CreateMap<Game, BLGame>().ForMember(dto => dto.Genres,
-            opt => opt.MapFrom(x => x.GameGenres.Select(y => y.Genre).ToList())).MaxDepth(3)
-            .ForMember(dto => dto.Platforms,
-            opt => opt.MapFrom(x => x.GamePlatform.Select(y => y.Platform).ToList())).MaxDepth(3)
+            CreateMap<Game, BLGame>()
+             //.ForMember(dto => dto.Genres, opt => opt.MapFrom(x => x.GameGenres.Select(y => y.Genre).ToList())).MaxDepth(1)
+            // .ForMember(dto => dto.Platforms, opt => opt.MapFrom(x => x.GamePlatform.Select(y => y.Platform).ToList())).MaxDepth(1)
             .ReverseMap();
         }
     }

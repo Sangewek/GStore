@@ -18,18 +18,15 @@ namespace GameStore.BLL.Infrastructure
 
         public static void ConfigurateInjections(IServiceCollection service)
         {
-            service.AddScoped<IGameRepository,GameRepository>();
-            service.AddScoped<ICommentRepository, CommentRepository>();
-            service.AddScoped<IGenreRepository, GenreRepository>();
-            service.AddScoped<IPublisherRepository, PublisherRepository>();
-            service.AddScoped<IPlatformRepository,PlatformRepository>();
             service.AddScoped<IUnitOfWork, UnitOfWork>();
             service.AddScoped<IDataContext, DataContext>();
             service.AddDbContext<DataContext>(options =>
-                options.UseLazyLoadingProxies().UseSqlServer("Data Source=GameStoreDB"));
+                options.UseSqlServer("Data Source=GameStoreDB"));
 
             service.AddScoped<IGameService, GameService>();
             service.AddScoped<ICommentService, CommentService >();
+            service.AddScoped<IGenreService, GenreService>();
+            service.AddScoped<IPublisherService, PublisherService>();
 
         }
     }

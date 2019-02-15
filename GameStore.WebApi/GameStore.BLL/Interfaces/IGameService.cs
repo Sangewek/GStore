@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace GameStore.BLL.Interfaces
 {
-    public interface IGameService
+    public interface IGameService: IService
     {
-        Task Add(BLGame game);
-        Task Update(BLGame game);
-        Task<BLGame> Get(int id);
-        Task<IEnumerable<BLGame>> GetGamesByGenre(int id);
-        Task<IEnumerable<BLGame>> GetGamesByPlatform(int id);
-        Task<IEnumerable<BLGame>> GetAll();
-        Task Delete(int id);
+        Task AddAsync(BLGame game);
+        Task UpdateAsync(BLGame game);
+        Task<BLGame> GetAsync(int id);
+        Task<IEnumerable<BLGenre>> GetGenresByGameAsync(int id);
+        Task<IEnumerable<BLGame>> GetGamesByPlatformAsync(int id);
+        Task<IEnumerable<BLGame>> GetAllAsync();
+        Task DeleteAsync(int id);
     }
 }
