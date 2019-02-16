@@ -11,5 +11,6 @@ namespace GameStore.BLL.Interfaces
         Task AddAsync(BLComment comment);
         Task<IEnumerable<BLComment>> GetCommentsForPostAsync(int id);
         Task DeleteAsync(int id);
+        Task<BLComment> GetById(int id);
     }
 }

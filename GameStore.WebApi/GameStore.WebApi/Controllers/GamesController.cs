@@ -25,50 +25,82 @@ namespace GameStore.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task Post([FromBody]BLGame game)
+        public async Task<IActionResult> Post([FromBody]BLGame game)
         {
+            if (game == null || game.PublisherId <= 0 || game.Name.Length == 0 )
+                return BadRequest("Wrong game model");
+
             await _gameService.AddAsync(game);
+            return Created("api/games/", game);
         }
 
         [HttpPut]
         [Route("{id}")]
-        public async Task Put([FromBody]BLGame game)
+        public async Task<IActionResult> Put(int id, [FromBody]BLGame game)
         {
+            if (id <= 0)
+                return NotFound();
+            if (game == null || game.PublisherId <= 0 || game.Name.Length == 0 )
+                return NoContent();
+            if (game.Id == 0 && id != 0)
+                game.Id = id;
+
             await _gameService.UpdateAsync(game);
+            return Ok();
         }
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<BLGame> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-           return await _gameService.GetAsync(id);
+            BLGame game = await _gameService.GetAsync(id);
+            if (game?.Name == null)
+                return NotFound();
+            else
+                return Ok(game);
         }
 
         [HttpGet]
-        public async Task<IEnumerable<BLGame>> Get()
+        public async Task<IActionResult> GetAll()
         {
-            return await _gameService.GetAllAsync();
+            IEnumerable<BLGame> games = await _gameService.GetAllAsync();
+            if (games?.Count()==0)
+                return NotFound();
+            else
+                return Ok(games);
         }
 
         [HttpDelete]
         [Route("{id}")]
-        public async Task Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            if (id <= 0 || await _gameService.GetAsync(id) == null)
+                return NotFound();
+
             await _gameService.DeleteAsync(id);
+            return Ok();
         }
 
         [HttpGet]
         [Route("{id}/genres")]
-        public async Task<IEnumerable<BLGenre>> GetByGenres(int id)
+        public async Task<IActionResult> GetGenres(int id)
         {
-           return await _gameService.GetGenresByGameAsync(id);
+            IEnumerable<BLGenre> genres = await _gameService.GetGenresByGameAsync(id);
+            if (genres?.Count() == 0)
+                return NotFound();
+            else
+                return Ok(genres);
         }
 
         [HttpGet]
         [Route("{id}/platforms")]
-        public async Task<IEnumerable<BLGame>> GetByPlatform(int id)
+        public async Task<IActionResult> GetByPlatform(int id)
         {
-            return await _gameService.GetGamesByPlatformAsync(id);
+            IEnumerable<BLGame> games = await _gameService.GetGamesByPlatformAsync(id);
+            if (games?.Count() == 0)
+                return NotFound();
+            else
+                return Ok(games);
         }
 
         [HttpGet]
@@ -83,7 +115,7 @@ namespace GameStore.WebApi.Controllers
                 await stream.CopyToAsync(memory);
             }
             memory.Position = 0;
-            return File(memory, "file/bin", Path.GetFileName(path));
+            return Ok(File(memory, "file/bin", Path.GetFileName(path)));
         }
     }
 }

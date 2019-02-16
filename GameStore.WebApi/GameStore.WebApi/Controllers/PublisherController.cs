@@ -21,43 +21,69 @@ namespace GameStore.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task Post([FromBody]BLPublisher publisher)
+        public async Task<IActionResult> Post([FromBody]BLPublisher publisher)
         {
+            if (publisher == null || publisher.Name.Length == 0)
+                return BadRequest("Wrong game model");
+
             await _publisherService.AddAsync(publisher);
+            return Created(this.RouteData.ToString(), publisher);
         }
 
         [HttpPut]
         [Route("{id}")]
-        public async Task Put([FromBody]BLPublisher publisher)
+        public async Task<IActionResult> Put(int id, [FromBody]BLPublisher publisher)
         {
+            if (id == 0)
+                return NotFound();
+            if (publisher == null || publisher.Name.Length == 0)
+                return NoContent();
+            if (publisher.Id == 0 && id != 0)
+                publisher.Id = id;
+
             await _publisherService.UpdateAsync(publisher);
+            return Ok();
         }
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<BLPublisher> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return await _publisherService.GetAsync(id);
+            BLPublisher publisher = await _publisherService.GetAsync(id);
+            if (publisher?.Name == null)
+                return NotFound();
+            else
+                return Ok(publisher);
         }
 
         [HttpGet]
-        public async Task<IEnumerable<BLPublisher>> Get()
+        public async Task<IActionResult> Get()
         {
-            return await _publisherService.GetAllAsync();
+            IEnumerable<BLPublisher> publishers = await _publisherService.GetAllAsync();
+            if (publishers?.Count() == 0)
+                return NotFound();
+            else
+                return Ok(publishers);
         }
 
         [HttpDelete]
         [Route("{id}")]
-        public async Task Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            if (id <= 0 || await _publisherService.GetAsync(id) == null)
+                return NotFound();
             await _publisherService.DeleteAsync(id);
+            return Ok();
         }
 
         [HttpGet]
         [Route("{publisherId}/games")]
-        public async Task<IEnumerable<BLGame>> GetGamesByPublisher(int publisherId)
+        public async Task<IActionResult> GetGamesByPublisher(int publisherId)
         {
-            return await _publisherService.GetGamesByPublisherAsync(publisherId);
+            IEnumerable<BLGame> games = await _publisherService.GetGamesByPublisherAsync(publisherId);
+            if (games?.Count() == 0)
+                return NotFound();
+            return Ok(games);
         }
     }
 }

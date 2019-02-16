@@ -14,6 +14,7 @@ namespace GameStore.WebApi.Infrastructure
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         private static Stopwatch _timer = new Stopwatch();
+
         public void OnActionExecuting(ActionExecutingContext context)
         {
             _logger.Info("Request for " + context.ActionDescriptor.DisplayName + " was from ip: "+context.HttpContext.Features.Get<IHttpConnectionFeature>().RemoteIpAddress);
