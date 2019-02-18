@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace GameStore.WebApi
 {
@@ -23,7 +24,14 @@ namespace GameStore.WebApi
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            InjectionResolver.ConfigurateInjections(services);
+            string projectPath = AppDomain.CurrentDomain.BaseDirectory.Split(new String[] { @"bin\" }, StringSplitOptions.None)[0] + "Properties";
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+            .SetBasePath(projectPath)
+            .AddJsonFile("appsettings.json")
+            .Build();
+            string connectionString = configuration.GetConnectionString("DefaultConnection");
+
+            InjectionResolver.ConfigurateInjections(services, connectionString);
 
             services.AddMvc().AddJsonOptions(option =>
          option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);

@@ -38,7 +38,7 @@ namespace GameStore.BLL.Services
 
         public async Task<BLGame> GetAsync(int id)
         {
-            Game game = await UnitOfWork.Games.SelectByIdAsync(id);
+            Game game = await UnitOfWork.Games.SelectByIdAsync(id,x=>x.GameGenres,x=>x.GamePlatform);
             return ToBlEntity(game);
         }
 

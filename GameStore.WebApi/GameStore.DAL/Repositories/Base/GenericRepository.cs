@@ -54,7 +54,7 @@ namespace GameStore.DAL.Repositories
         public async Task<T> SelectByIdAsync(int id, params Expression<Func<T, object>>[] includes)
         {
             if (includes != null && includes.Length > 0)
-                 includes.ToList().ForEach(y=>Db.Set<T>().Include(y).Load());
+                 includes.ToList().ForEach(y=>Db.Set<T>().Include(y));
 
             return await Db.Set<T>().FirstAsync(x => x.Id == id);
         }

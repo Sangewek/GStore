@@ -16,12 +16,12 @@ namespace GameStore.BLL.Infrastructure
     public class InjectionResolver
     {
 
-        public static void ConfigurateInjections(IServiceCollection service)
+        public static void ConfigurateInjections(IServiceCollection service, string connection)
         {
             service.AddScoped<IUnitOfWork, UnitOfWork>();
             service.AddScoped<IDataContext, DataContext>();
             service.AddDbContext<DataContext>(options =>
-                options.UseSqlServer("Data Source=GameStoreDB"));
+                options.UseLazyLoadingProxies().UseSqlServer(connection));
 
             service.AddScoped<IGameService, GameService>();
             service.AddScoped<ICommentService, CommentService >();
