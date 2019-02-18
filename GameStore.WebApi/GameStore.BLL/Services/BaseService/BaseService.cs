@@ -9,7 +9,7 @@ using GameStore.DAL.Models.Base;
 
 namespace GameStore.BLL.Services
 {
-    public abstract class BaseService<TBlEntity,TDalEntity>: IService where TBlEntity: class where TDalEntity:BaseEntity
+    public abstract class BaseService<TBlEntity,TDalEntity>: IDisposable where TBlEntity: class where TDalEntity:BaseEntity
     {
         protected readonly IUnitOfWork UnitOfWork;
 

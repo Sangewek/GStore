@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameStore.BLL.Interfaces
 {
-    public interface IPublisherService: IService
+    public interface IPublisherService: IDisposable
     {
         Task AddAsync(BLPublisher publisher);
         Task UpdateAsync(BLPublisher publisher);

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using GameStore.BLL.Interfaces;
 using GameStore.BLL.Models;
@@ -27,7 +28,7 @@ namespace GameStore.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]BLGame game)
         {
-            if (game == null || game.PublisherId <= 0 || game.Name.Length == 0 )
+            if (game == null || game.PublisherId <= 0 || game.Name.Length == 0)
                 return BadRequest("Wrong game model");
 
             await _gameService.AddAsync(game);
@@ -40,7 +41,7 @@ namespace GameStore.WebApi.Controllers
         {
             if (id <= 0)
                 return NotFound();
-            if (game == null || game.PublisherId <= 0 || game.Name.Length == 0 )
+            if (game == null || game.PublisherId <= 0 || game.Name.Length == 0)
                 return NoContent();
             if (game.Id == 0 && id != 0)
                 game.Id = id;
@@ -64,7 +65,7 @@ namespace GameStore.WebApi.Controllers
         public async Task<IActionResult> GetAll()
         {
             IEnumerable<BLGame> games = await _gameService.GetAllAsync();
-            if (games?.Count()==0)
+            if (games?.Count() == 0)
                 return NotFound();
             else
                 return Ok(games);
@@ -93,7 +94,7 @@ namespace GameStore.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("{id}/platforms")]
+        [Route("platform/{platformid}")]
         public async Task<IActionResult> GetByPlatform(int id)
         {
             IEnumerable<BLGame> games = await _gameService.GetGamesByPlatformAsync(id);
@@ -105,17 +106,10 @@ namespace GameStore.WebApi.Controllers
 
         [HttpGet]
         [Route("{id}/download")]
-        public async Task<IActionResult> DownloadGame()
+        public async Task<IActionResult> DownloadGame(int id)
         {
-            string path = "Files/Game.bin";
-
-            var memory = new MemoryStream();
-            using (var stream = new FileStream(path, FileMode.Open))
-            {
-                await stream.CopyToAsync(memory);
-            }
-            memory.Position = 0;
-            return Ok(File(memory, "file/bin", Path.GetFileName(path)));
+         //TODO:make file download
+            return Ok(File((await _gameService.DownloadGame(id)),"file/bin","Game"));
         }
     }
 }

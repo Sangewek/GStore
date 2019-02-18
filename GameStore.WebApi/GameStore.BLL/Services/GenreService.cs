@@ -6,13 +6,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using GameStore.DAL.Interfaces.Repositories;
 
 namespace GameStore.BLL.Services
 {
     public class GenreService : BaseService<BLGenre,Genre>, IGenreService
     {
-        public GenreService(IUnitOfWork unitOfWork) : base(unitOfWork)
+        private readonly IGenreRepository _genreRepository;
+
+        public GenreService(IUnitOfWork unitOfWork,IGenreRepository genreRepository) : base(unitOfWork)
         {
+            _genreRepository = genreRepository;
         }
 
         public async Task AddAsync(BLGenre genre)
@@ -20,7 +24,7 @@ namespace GameStore.BLL.Services
             if (genre == null || genre.Name.Length == 0 )
                 throw new ArgumentException("Wrong game model");
 
-            await UnitOfWork.Genres.InsertAsync(ToDalEntity(genre));
+            await _genreRepository.InsertAsync(ToDalEntity(genre));
             await UnitOfWork.SaveAsync();
         }
 
@@ -29,36 +33,32 @@ namespace GameStore.BLL.Services
             if (genre == null || genre.Name.Length == 0 || genre.Id<=0)
                 throw new ArgumentException("Wrong game model");
 
-            await UnitOfWork.Genres.UpdateAsync(ToDalEntity(genre));
+            await _genreRepository.UpdateAsync(ToDalEntity(genre));
             await UnitOfWork.SaveAsync();
         }
 
         public async Task<BLGenre> GetAsync(int id)
         {
-            Genre genre = await UnitOfWork.Genres.SelectByIdAsync(id);
+            Genre genre = await _genreRepository.SelectByIdAsync(id);
             return ToBlEntity(genre);
         }
 
         public async Task<IEnumerable<BLGame>> GetGamesByGenreAsync(int id)
         {
-            Genre genre = await UnitOfWork.Genres.SelectByIdAsync(id,x=>x.GameGenres);
-            List<Game> games = new List<Game>();
-
-            foreach (var game in genre.GameGenres)
-                games.Add(await UnitOfWork.Games.SelectByIdAsync(game.GameId));
-
-            return BaseService<BLGame,Game>.ToBlEntity(games);
+            Genre genre = await _genreRepository.SelectByIdAsync(id,x=>x.GameGenres);
+       
+            return ToBlEntity(genre).Games;
         }
 
         public async Task<IEnumerable<BLGenre>> GetAllAsync()
         {
             return ToBlEntity(
-                await UnitOfWork.Genres.SelectAllAsync());
+                await _genreRepository.SelectAllAsync());
         }
 
         public async Task DeleteAsync(int id)
         {
-            await UnitOfWork.Genres.DeleteAsync(id);
+            await _genreRepository.DeleteAsync(id);
             await UnitOfWork.SaveAsync();
         }
     }

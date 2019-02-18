@@ -26,7 +26,8 @@ namespace GameStore.WebApi.Infrastructure
             }
             catch (Exception ex)
             {
-                _logger.Error(ex,"Method: "+_next.Method.Name);
+                _logger.Error(ex,"Method: "+_next.Method.Name+" | Message:"+ex.Message+" | StackTrace:"+ex.StackTrace);
+                throw;
             }
         }
     }

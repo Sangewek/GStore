@@ -20,6 +20,12 @@ namespace GameStore.BLL.Infrastructure
         {
             service.AddScoped<IUnitOfWork, UnitOfWork>();
             service.AddScoped<IDataContext, DataContext>();
+            service.AddScoped<ICommentRepository, CommentRepository>();
+            service.AddScoped<IGameRepository, GameRepository>();
+            service.AddScoped<IPlatformRepository, PlatformRepository>();
+            service.AddScoped<IGenreRepository, GenreRepository>();
+            service.AddScoped<IPublisherRepository, PublisherRepository>();
+
             service.AddDbContext<DataContext>(options =>
                 options.UseLazyLoadingProxies().UseSqlServer(connection));
 

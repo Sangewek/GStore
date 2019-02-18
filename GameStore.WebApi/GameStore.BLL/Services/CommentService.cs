@@ -14,8 +14,10 @@ namespace GameStore.BLL.Services
 {
     public class CommentService : BaseService<BLComment,Comment>, ICommentService
     {
-        public CommentService(IUnitOfWork unitOfWork) : base(unitOfWork)
+        private readonly ICommentRepository _commentService;
+        public CommentService(IUnitOfWork unitOfWork, ICommentRepository commentService) : base(unitOfWork)
         {
+            this._commentService = commentService;
         }
 
         public async Task AddAsync(BLComment comment)
@@ -23,33 +25,33 @@ namespace GameStore.BLL.Services
             if(comment == null || comment.Body.Length==0 || comment.GameId<0 || comment.Name.Length==0)
                 throw new ArgumentException("Wrong comment model");
 
-            await UnitOfWork.Comments.InsertAsync(ToDalEntity(comment));
+            await _commentService.InsertAsync(ToDalEntity(comment));
             await UnitOfWork.SaveAsync();
         }
 
         public async Task<BLComment> GetById(int id)
         {
-            return ToBlEntity(await UnitOfWork.Comments.SelectByIdAsync(id));
+            return ToBlEntity(await _commentService.SelectByIdAsync(id));
         }
 
         public async Task<IEnumerable<BLComment>> GetCommentsForPostAsync(int id)
         {
-            IEnumerable<Comment> comments = await UnitOfWork.Comments.SelectAllAsync(x => x.GameId == id);
+            IEnumerable<Comment> comments = await _commentService.SelectAllAsync(x => x.GameId == id);
             return ToBlEntity(comments);
         }
 
         public async Task DeleteAsync(int id)
         {
-            Comment comment = await UnitOfWork.Comments.SelectByIdAsync(id);
+            Comment comment = await _commentService.SelectByIdAsync(id);
             if (comment?.ParentCommentId != null)
             {
                 comment.ParentCommentId = null;
-                await UnitOfWork.Comments.UpdateAsync(comment);
+                await _commentService.UpdateAsync(comment);
             }
 
             if (comment != null)
             {
-                await UnitOfWork.Comments.DeleteAsync(id);
+                await _commentService.DeleteAsync(id);
                 await UnitOfWork.SaveAsync();
             }
         }

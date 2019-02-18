@@ -5,10 +5,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using GameStore.BLL.Interfaces;
 using GameStore.BLL.Mapper;
 using GameStore.BLL.Models;
 using GameStore.BLL.Services;
 using GameStore.DAL.Interfaces;
+using GameStore.DAL.Interfaces.Repositories;
 using GameStore.DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -19,7 +21,10 @@ namespace GameStore.Tests.Services
     public class GameServiceTest
     {
         private Mock<IUnitOfWork> _unitOfWork;
+        private Mock<IGameRepository> _gameRepository;
+        private Mock<IPlatformRepository> _platformRepository;
         private GameService _gameService;
+
 
         static GameServiceTest()
         {
@@ -33,7 +38,10 @@ namespace GameStore.Tests.Services
         public void Setup()
         {
             _unitOfWork = new Mock<IUnitOfWork>();
-            _gameService = new GameService(_unitOfWork.Object);
+            _gameRepository = new Mock<IGameRepository>();
+            _platformRepository = new Mock<IPlatformRepository>();
+
+            _gameService = new GameService(_unitOfWork.Object,_gameRepository.Object,_platformRepository.Object);
 
 
         }
@@ -42,13 +50,13 @@ namespace GameStore.Tests.Services
         {
             //arrange
             BLGame game = new BLGame() { Description = "Description", PublisherId = 1, Name = "Name" };
-            _unitOfWork.Setup(uow => uow.Games.InsertAsync(It.IsAny<Game>())).Returns(Task.CompletedTask).Verifiable();
-            _unitOfWork.Setup(uow => uow.SaveAsync()).Returns(Task.CompletedTask).Verifiable();
+            _gameRepository.Setup(gs => gs.InsertAsync(It.IsAny<Game>())).Returns(Task.CompletedTask).Verifiable();
+            _unitOfWork.Setup(gs => gs.SaveAsync()).Returns(Task.CompletedTask).Verifiable();
             //act
             await _gameService.AddAsync(game);
             //assert
-            _unitOfWork.Verify(cs => cs.Games.InsertAsync(It.IsAny<Game>()));
-            _unitOfWork.Verify(cs => cs.SaveAsync());
+            _gameRepository.Verify(gs => gs.InsertAsync(It.IsAny<Game>()));
+            _unitOfWork.Verify(uow => uow.SaveAsync());
         }
 
         [Test]
@@ -56,8 +64,8 @@ namespace GameStore.Tests.Services
         {
             //arrange
             BLGame Game = new BLGame() { Description = "Description", PublisherId = 1, Name = "" };
-            _unitOfWork.Setup(uow => uow.Games.InsertAsync(It.IsAny<Game>())).Returns(Task.CompletedTask).Verifiable();
-            _unitOfWork.Setup(uow => uow.SaveAsync()).Returns(Task.CompletedTask).Verifiable();
+            _gameRepository.Setup(gs => gs.InsertAsync(It.IsAny<Game>())).Returns(Task.CompletedTask).Verifiable();
+            _unitOfWork.Setup(gs => gs.SaveAsync()).Returns(Task.CompletedTask).Verifiable();
             //act
             //assert
             Assert.ThrowsAsync<ArgumentException>(async () => await _gameService.AddAsync(Game));
@@ -67,13 +75,13 @@ namespace GameStore.Tests.Services
         {
             //arrange
             BLGame game = new BLGame() { Id = 1, Description = "Description", PublisherId = 1, Name = "Name" };
-            _unitOfWork.Setup(uow => uow.Games.UpdateAsync(It.IsAny<Game>())).Returns(Task.CompletedTask).Verifiable();
-            _unitOfWork.Setup(uow => uow.SaveAsync()).Returns(Task.CompletedTask).Verifiable();
+            _gameRepository.Setup(gs => gs.UpdateAsync(It.IsAny<Game>())).Returns(Task.CompletedTask).Verifiable();
+            _unitOfWork.Setup(gs => gs.SaveAsync()).Returns(Task.CompletedTask).Verifiable();
             //act
             await _gameService.UpdateAsync(game);
             //assert
-            _unitOfWork.Verify(cs => cs.Games.UpdateAsync(It.IsAny<Game>()));
-            _unitOfWork.Verify(cs => cs.SaveAsync());
+            _gameRepository.Verify(gs => gs.UpdateAsync(It.IsAny<Game>()));
+            _unitOfWork.Verify(uow => uow.SaveAsync());
         }
 
         [Test]
@@ -81,8 +89,8 @@ namespace GameStore.Tests.Services
         {
             //arrange
             BLGame game = new BLGame() { Id = 0, Description = "Description", PublisherId = 1, Name = "" };
-            _unitOfWork.Setup(uow => uow.Games.UpdateAsync(It.IsAny<Game>())).Returns(Task.CompletedTask).Verifiable();
-            _unitOfWork.Setup(uow => uow.SaveAsync()).Returns(Task.CompletedTask).Verifiable();
+            _gameRepository.Setup(gs => gs.UpdateAsync(It.IsAny<Game>())).Returns(Task.CompletedTask).Verifiable();
+            _unitOfWork.Setup(gs => gs.SaveAsync()).Returns(Task.CompletedTask).Verifiable();
             //act
             //assert
             Assert.ThrowsAsync<ArgumentException>(async () => await _gameService.AddAsync(game));
@@ -93,11 +101,11 @@ namespace GameStore.Tests.Services
         {
             //arrange
             Game game = new Game() { Description = "Description", PublisherId = 1, Name = "Name" };
-            _unitOfWork.Setup(uow => uow.Games.SelectByIdAsync(1)).Returns(Task.FromResult(game)).Verifiable();
+            _gameRepository.Setup(gs => gs.SelectByIdAsync(1)).Returns(Task.FromResult(game)).Verifiable();
             //act
             var result = await _gameService.GetAsync(1);
             //assert
-            _unitOfWork.Verify(cs => cs.Games.SelectByIdAsync(1));
+            _gameRepository.Verify(gs => gs.SelectByIdAsync(1));
             Assert.AreEqual(result.Description, game.Description);
         }
         [Test]
@@ -106,11 +114,11 @@ namespace GameStore.Tests.Services
             //arrange
             IEnumerable<Game> games = new List<Game> { new Game { Description = "Description", PublisherId = 1, Name = "Name" } };
 
-            _unitOfWork.Setup(uow => uow.Games.SelectAllAsync()).Returns(Task.FromResult(games)).Verifiable();
+            _gameRepository.Setup(gs => gs.SelectAllAsync()).Returns(Task.FromResult(games)).Verifiable();
             //act
             var result = await _gameService.GetAllAsync();
             //assert
-            _unitOfWork.Verify(cs => cs.Games.SelectAllAsync());
+            _gameRepository.Verify(gs => gs.SelectAllAsync());
             Assert.AreEqual(result.First().Description, games.First().Description);
         }
 
@@ -119,16 +127,16 @@ namespace GameStore.Tests.Services
         {
             //arrange
             Game game = new Game() { Description = "Description", PublisherId = 1, Name = "Name" };
-            _unitOfWork.Setup(uow => uow.Games.SelectByIdAsync(1)).Returns(Task.FromResult(game)).Verifiable();
-            _unitOfWork.Setup(uow => uow.Games.DeleteAsync(1)).Returns(Task.FromResult(0)).Verifiable();
-            _unitOfWork.Setup(uow => uow.SaveAsync()).Returns(Task.FromResult(0)).Verifiable();
+            _gameRepository.Setup(gs => gs.SelectByIdAsync(1)).Returns(Task.FromResult(game)).Verifiable();
+            _gameRepository.Setup(gs => gs.DeleteAsync(1)).Returns(Task.FromResult(0)).Verifiable();
+            _unitOfWork.Setup(gs => gs.SaveAsync()).Returns(Task.FromResult(0)).Verifiable();
 
             //act
             await _gameService.DeleteAsync(1);
             //assert
-            _unitOfWork.Verify(cs => cs.Games.SelectByIdAsync(1));
-            _unitOfWork.Verify(cs => cs.Games.DeleteAsync(1));
-            _unitOfWork.Verify(cs => cs.SaveAsync());
+            _gameRepository.Verify(gs => gs.SelectByIdAsync(1));
+            _gameRepository.Verify(gs => gs.DeleteAsync(1));
+            _unitOfWork.Verify(uow => uow.SaveAsync());
         }
 
         [Test]
@@ -136,12 +144,12 @@ namespace GameStore.Tests.Services
         {
             //arrange
             Game game = null;
-            _unitOfWork.Setup(uow => uow.Games.SelectByIdAsync(1)).Returns(Task.FromResult(game)).Verifiable();
+            _gameRepository.Setup(gs => gs.SelectByIdAsync(1)).Returns(Task.FromResult(game)).Verifiable();
 
             //act
             await _gameService.DeleteAsync(1);
             //assert
-            _unitOfWork.Verify(cs => cs.Games.SelectByIdAsync(1));
+            _gameRepository.Verify(gs => gs.SelectByIdAsync(1));
         }
     }
 }

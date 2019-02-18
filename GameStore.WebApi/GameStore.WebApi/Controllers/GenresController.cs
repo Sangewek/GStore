@@ -83,7 +83,7 @@ namespace GameStore.WebApi.Controllers
                 return NotFound();
 
             IEnumerable<BLGame> games = await _genreService.GetGamesByGenreAsync(genreId);
-            if (games?.Count() > 0)
+            if (games?.Count() == 0)
                 return NotFound();
             return Ok(games);
         }
