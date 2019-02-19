@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.DAL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 
 namespace GameStore.BLL.Services
 {
@@ -79,18 +80,9 @@ namespace GameStore.BLL.Services
             await UnitOfWork.SaveAsync();
         }
 
-        public async Task<byte[]> DownloadGame(int id)
+        public async Task<string> DownloadGame(int id)
         {
-            string path = "Files\\Game.bin";
-            string name = (await _gameRepository.SelectByIdAsync(id)).Name;
-
-            var memory = new MemoryStream();
-            using (var stream = new FileStream(path, FileMode.Open))
-            {
-                await stream.CopyToAsync(memory);
-            }
-            memory.Position = 0;
-            return memory.ToArray();
+            return (await _gameRepository.SelectByIdAsync(id)).Name.Replace(" ","_");
         }
     }
 }

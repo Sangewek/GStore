@@ -25,6 +25,12 @@ namespace GameStore.WebApi.Controllers
             _gameService = gameService;
         }
 
+        /// <returns>Added game model and result of adding</returns>
+        /// <param name="game"></param>
+        /// <response code="201">Returns succeeded created model</response>
+        /// <response code="400">Recived model is not valid</response>
+        [ProducesResponseType(typeof(BLGame), 201)]
+        [ProducesResponseType(400)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]BLGame game)
         {
@@ -35,6 +41,15 @@ namespace GameStore.WebApi.Controllers
             return Created("api/games/", game);
         }
 
+        /// <returns>Updated game model and result of adding</returns>
+        /// <param name="id"></param>
+        /// <param name="game"></param>
+        /// <response code="200">Returns succeeded updated model</response>
+        /// <response code="404">Recived model is not found in database</response>
+        /// <response code="400">Recived model is not valid</response>
+        [ProducesResponseType(typeof(BLGame), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(400)]
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody]BLGame game)
@@ -50,6 +65,12 @@ namespace GameStore.WebApi.Controllers
             return Ok();
         }
 
+        /// <returns>Certain game model by id</returns>
+        /// <param name="id"></param>
+        /// <response code="200">Returns succeeded created model</response>
+        /// <response code="404">Model with such id was not found</response>
+        [ProducesResponseType(typeof(BLGame), 200)]
+        [ProducesResponseType(404)]
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> Get(int id)
@@ -61,6 +82,11 @@ namespace GameStore.WebApi.Controllers
                 return Ok(game);
         }
 
+        /// <returns>All game models</returns>
+        /// <response code="200">Returns collection of all game models </response>
+        /// <response code="404">Game modeils was not found in the database</response>
+        [ProducesResponseType(typeof(IEnumerable<BLGame>), 200)]
+        [ProducesResponseType(404)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -71,6 +97,11 @@ namespace GameStore.WebApi.Controllers
                 return Ok(games);
         }
 
+        /// <returns>Result of deleting game model by id</returns>
+        /// <response code="200">Game model was removed from database</response>
+        /// <response code="404">Game with such id was not found</response>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -82,6 +113,11 @@ namespace GameStore.WebApi.Controllers
             return Ok();
         }
 
+        /// <returns>Genres of certain game</returns>
+        /// <response code="200">Genres of certain game exist</response>
+        /// <response code="404">Game has no genres</response>
+        [ProducesResponseType(typeof(IEnumerable<BLGenre>), 200)]
+        [ProducesResponseType(404)]
         [HttpGet]
         [Route("{id}/genres")]
         public async Task<IActionResult> GetGenres(int id)
@@ -93,6 +129,11 @@ namespace GameStore.WebApi.Controllers
                 return Ok(genres);
         }
 
+        /// <returns>Game models wich has choosed platform</returns>
+        /// <response code="200">Games with such platform id exist</response>
+        /// <response code="404">Games with such platform id was not found</response>
+        [ProducesResponseType(typeof(IEnumerable<BLGame>), 200)]
+        [ProducesResponseType(404)]
         [HttpGet]
         [Route("platform/{platformid}")]
         public async Task<IActionResult> GetByPlatform(int id)
@@ -104,12 +145,24 @@ namespace GameStore.WebApi.Controllers
                 return Ok(games);
         }
 
+        /// <returns>Game models wich has choosed platform</returns>
+        /// <response code="200">Games with such platform id exist</response>
+        /// <response code="404">Games with such id was not found</response>
+        [ProducesResponseType(typeof(HttpResponse), 200)]
+        [ProducesResponseType(404)]
         [HttpGet]
         [Route("{id}/download")]
         public async Task<IActionResult> DownloadGame(int id)
         {
-         //TODO:make file download
-            return Ok(File((await _gameService.DownloadGame(id)),"file/bin","Game"));
+            HttpResponse response = HttpContext.Response;
+            string gameName = await _gameService.DownloadGame(id);
+            if (gameName == null || gameName.Length < 3)
+                return NotFound();
+            response.Clear();
+            response.ContentType = "application/octet-stream";
+            response.Headers.Add("content-disposition", "attachment;filename=" + $"{gameName}.bin");
+            await response.SendFileAsync("Files/Game.bin");
+            return Ok(response);
         }
     }
 }

@@ -25,15 +25,6 @@ namespace GameStore.Tests.Services
         private Mock<IPlatformRepository> _platformRepository;
         private GameService _gameService;
 
-
-        static GameServiceTest()
-        {
-            AutoMapper.Mapper.Initialize(config =>
-            {
-                config.AddProfile<MapToBLModels>();
-            });
-        }
-
         [SetUp]
         public void Setup()
         {

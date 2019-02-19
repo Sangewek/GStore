@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GameStore.BLL.Interfaces;
 using GameStore.BLL.Infrastructure;
 using GameStore.BLL.Mapper;
-using GameStore.BLL.Services;
 using GameStore.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
+using System.IO;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace GameStore.WebApi
 {
@@ -45,12 +40,21 @@ namespace GameStore.WebApi
                     Description = "ASP.NET Core Web API"
                 });
             });
+            services.AddSwaggerGen();
 
             services.AddMvc(
                 config =>
                 {
                     config.Filters.Add(new ActionFilters());
                 });
+
+            services.ConfigureSwaggerGen(options =>
+            {
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+
+                var xmlPath = Path.Combine(basePath, "GameStore.WebApi.xml");
+                options.IncludeXmlComments(xmlPath);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

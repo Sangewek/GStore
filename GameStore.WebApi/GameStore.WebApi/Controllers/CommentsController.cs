@@ -21,6 +21,12 @@ namespace GameStore.WebApi.Controllers
             _commentService = commentService;
         }
 
+        /// <returns>collection of comments to post</returns>
+        /// <param name="gameId"></param>
+        /// <response code="200">Returns the collection of comments</response>
+        /// <response code="404">Comments of sertain post was not found</response>
+        [ProducesResponseType(typeof(IEnumerable<BLComment>), 200)]
+        [ProducesResponseType(404)]
         [HttpGet]
         [Route("{gameId}")]
         public async Task<IActionResult> Get(int gameId)
@@ -32,6 +38,13 @@ namespace GameStore.WebApi.Controllers
                 return Ok(comments);
         }
 
+        /// <returns>Result of comment creation</returns>
+        /// <param name="gameId"></param>
+        /// <param name="comment"></param>
+        /// <response code="201">Adding a new comment to certain post</response>
+        /// <response code="400">Recived comment model was not valid</response>
+        [ProducesResponseType(typeof(BLComment), 201)]
+        [ProducesResponseType(400)]
         [HttpPost]
         [Route("{gameId}")]
         public async Task<IActionResult> Post(int gameId, [FromBody]BLComment comment)
@@ -42,9 +55,19 @@ namespace GameStore.WebApi.Controllers
 
             comment.GameId = gameId;
             await _commentService.AddAsync(comment);
-            return Created("/api/comments/"+gameId, comment);
+            return Created("/api/comments/" + gameId, comment);
         }
 
+        /// <returns>Result of comment deleting</returns>
+        /// <param name="gameId"></param>
+        /// <param name="commentId"></param>
+        /// <param name="comment"></param>
+        /// <response code="201">Adding a new comment to certain post as an answer to anouther comment</response>
+        /// <response code="400">Recived comment model was not valid</response>
+        /// <response code="404">Parent comment was not found</response>
+        [ProducesResponseType(typeof(BLComment), 201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         [HttpPost]
         [Route("{gameId}/{commentId}")]
         public async Task<IActionResult> AnswerToComment(int gameId, int commentId, [FromBody]BLComment comment)
@@ -60,9 +83,15 @@ namespace GameStore.WebApi.Controllers
             comment.ParentCommentId = commentId;
             await _commentService.AddAsync(comment);
 
-            return Created("api/comments/"+gameId+"/"+commentId, comment);
+            return Created("api/comments/" + gameId + "/" + commentId, comment);
         }
 
+        /// <returns>Result of comment deleting</returns>
+        /// <param name="id"></param>
+        /// <response code="200">Deleted comment from post by post-id</response>
+        /// <response code="404">Comment was not found by recived id</response>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> Delete(int id)

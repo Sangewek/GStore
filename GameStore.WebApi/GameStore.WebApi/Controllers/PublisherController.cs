@@ -20,6 +20,12 @@ namespace GameStore.WebApi.Controllers
             _publisherService = publisherService;
         }
 
+        /// <returns>Added publisher model and result of adding</returns>
+        /// <param name="publisher"></param>
+        /// <response code="201">Returns succeeded created model</response>
+        /// <response code="400">Recived model is not valid</response>
+        [ProducesResponseType(typeof(BLPublisher), 201)]
+        [ProducesResponseType(400)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]BLPublisher publisher)
         {
@@ -30,6 +36,15 @@ namespace GameStore.WebApi.Controllers
             return Created(this.RouteData.ToString(), publisher);
         }
 
+        /// <returns>Updated publisher model and result of adding</returns>
+        /// <param name="id"></param>
+        /// <param name="publisher"></param>
+        /// <response code="200">Returns succeeded updated model</response>
+        /// <response code="404">Recived model is not found in database</response>
+        /// <response code="400">Recived model is not valid</response>
+        [ProducesResponseType(typeof(BLPublisher), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(400)]
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody]BLPublisher publisher)
@@ -45,6 +60,12 @@ namespace GameStore.WebApi.Controllers
             return Ok();
         }
 
+        /// <returns>Certain publisher model by id</returns>
+        /// <param name="id"></param>
+        /// <response code="200">Returns succeeded created model</response>
+        /// <response code="404">Model with such id was not found</response>
+        [ProducesResponseType(typeof(BLPublisher), 200)]
+        [ProducesResponseType(404)]
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> Get(int id)
@@ -56,6 +77,11 @@ namespace GameStore.WebApi.Controllers
                 return Ok(publisher);
         }
 
+        /// <returns>All publishers models</returns>
+        /// <response code="200">Returns all publishers collection</response>
+        /// <response code="404">Genre modeils was not found in the database</response>
+        [ProducesResponseType(typeof(IEnumerable<BLPublisher>), 200)]
+        [ProducesResponseType(404)]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -66,6 +92,11 @@ namespace GameStore.WebApi.Controllers
                 return Ok(publishers);
         }
 
+        /// <returns>Result of deleting publisher model by id</returns>
+        /// <response code="200">Publisher model was removed from database</response>
+        /// <response code="404">Publisher with such id was not found</response>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -76,6 +107,11 @@ namespace GameStore.WebApi.Controllers
             return Ok();
         }
 
+        /// <returns>Games of certain publisher</returns>
+        /// <response code="200">Games of certain publisher exist</response>
+        /// <response code="404">Publisher has no games</response>
+        [ProducesResponseType(typeof(IEnumerable<BLPublisher>), 200)]
+        [ProducesResponseType(404)]
         [HttpGet]
         [Route("{publisherId}/games")]
         public async Task<IActionResult> GetGamesByPublisher(int publisherId)
@@ -87,3 +123,4 @@ namespace GameStore.WebApi.Controllers
         }
     }
 }
+

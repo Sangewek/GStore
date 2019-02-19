@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.BLL.Interfaces
 {
-    public interface IGameService: IDisposable
+    public interface IGameService : IDisposable
     {
         Task AddAsync(BLGame game);
         Task UpdateAsync(BLGame game);
@@ -18,6 +18,6 @@ namespace GameStore.BLL.Interfaces
         Task<IEnumerable<BLGame>> GetGamesByPlatformAsync(int id);
         Task<IEnumerable<BLGame>> GetAllAsync();
         Task DeleteAsync(int id);
-        Task<byte[]> DownloadGame(int id);
+        Task<string> DownloadGame(int id);
     }
 }
