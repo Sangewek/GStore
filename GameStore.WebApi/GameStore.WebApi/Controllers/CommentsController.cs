@@ -24,7 +24,7 @@ namespace GameStore.WebApi.Controllers
         /// <returns>collection of comments to post</returns>
         /// <param name="gameId"></param>
         /// <response code="200">Returns the collection of comments</response>
-        /// <response code="404">Comments of sertain post was not found</response>
+        /// <response code="404">Comments of certain post was not found</response>
         [ProducesResponseType(typeof(IEnumerable<BLComment>), 200)]
         [ProducesResponseType(404)]
         [HttpGet]
@@ -42,7 +42,7 @@ namespace GameStore.WebApi.Controllers
         /// <param name="gameId"></param>
         /// <param name="comment"></param>
         /// <response code="201">Adding a new comment to certain post</response>
-        /// <response code="400">Recived comment model was not valid</response>
+        /// <response code="400">Received comment model was not valid</response>
         [ProducesResponseType(typeof(BLComment), 201)]
         [ProducesResponseType(400)]
         [HttpPost]
@@ -63,7 +63,7 @@ namespace GameStore.WebApi.Controllers
         /// <param name="commentId"></param>
         /// <param name="comment"></param>
         /// <response code="201">Adding a new comment to certain post as an answer to anouther comment</response>
-        /// <response code="400">Recived comment model was not valid</response>
+        /// <response code="400">Received comment model was not valid</response>
         /// <response code="404">Parent comment was not found</response>
         [ProducesResponseType(typeof(BLComment), 201)]
         [ProducesResponseType(400)]
@@ -89,7 +89,7 @@ namespace GameStore.WebApi.Controllers
         /// <returns>Result of comment deleting</returns>
         /// <param name="id"></param>
         /// <response code="200">Deleted comment from post by post-id</response>
-        /// <response code="404">Comment was not found by recived id</response>
+        /// <response code="404">Comment was not found by received id</response>
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [HttpDelete]

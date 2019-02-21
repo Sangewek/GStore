@@ -23,7 +23,7 @@ namespace GameStore.WebApi.Controllers
         /// <returns>Added genre model and result of adding</returns>
         /// <param name="genre"></param>
         /// <response code="201">Returns succeeded created model</response>
-        /// <response code="400">Recived model is not valid</response>
+        /// <response code="400">Received model is not valid</response>
         [ProducesResponseType(typeof(BLGenre), 201)]
         [ProducesResponseType(400)]
         [HttpPost]
@@ -40,8 +40,8 @@ namespace GameStore.WebApi.Controllers
         /// <param name="id"></param>
         /// <param name="genre"></param>
         /// <response code="200">Returns succeeded updated model</response>
-        /// <response code="404">Recived model is not found in database</response>
-        /// <response code="400">Recived model is not valid</response>
+        /// <response code="404">Received model is not found in database</response>
+        /// <response code="400">Received model is not valid</response>
         [ProducesResponseType(typeof(BLGenre), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
@@ -78,7 +78,7 @@ namespace GameStore.WebApi.Controllers
 
         /// <returns>All genres models</returns>
         /// <response code="200">Returns all genres collection</response>
-        /// <response code="404">Genre modeils was not found in the database</response>
+        /// <response code="404">Genre models was not found in the database</response>
         [ProducesResponseType(typeof(IEnumerable<BLGenre>), 200)]
         [ProducesResponseType(404)]
         [HttpGet]

@@ -17,9 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Microsoft.EntityFrameworkCore.SqlServer">
-      <HintPath>..\..\Microsoft.EntityFrameworkCore.SqlServer.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

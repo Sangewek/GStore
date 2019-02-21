@@ -28,7 +28,7 @@ namespace GameStore.WebApi.Controllers
         /// <returns>Added game model and result of adding</returns>
         /// <param name="game"></param>
         /// <response code="201">Returns succeeded created model</response>
-        /// <response code="400">Recived model is not valid</response>
+        /// <response code="400">Received model is not valid</response>
         [ProducesResponseType(typeof(BLGame), 201)]
         [ProducesResponseType(400)]
         [HttpPost]
@@ -45,8 +45,8 @@ namespace GameStore.WebApi.Controllers
         /// <param name="id"></param>
         /// <param name="game"></param>
         /// <response code="200">Returns succeeded updated model</response>
-        /// <response code="404">Recived model is not found in database</response>
-        /// <response code="400">Recived model is not valid</response>
+        /// <response code="404">Received model is not found in database</response>
+        /// <response code="400">Received model is not valid</response>
         [ProducesResponseType(typeof(BLGame), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
@@ -84,7 +84,7 @@ namespace GameStore.WebApi.Controllers
 
         /// <returns>All game models</returns>
         /// <response code="200">Returns collection of all game models </response>
-        /// <response code="404">Game modeils was not found in the database</response>
+        /// <response code="404">Game models was not found in the database</response>
         [ProducesResponseType(typeof(IEnumerable<BLGame>), 200)]
         [ProducesResponseType(404)]
         [HttpGet]
@@ -129,23 +129,23 @@ namespace GameStore.WebApi.Controllers
                 return Ok(genres);
         }
 
-        /// <returns>Game models wich has choosed platform</returns>
+        /// <returns>Game models witch has chose platform</returns>
         /// <response code="200">Games with such platform id exist</response>
         /// <response code="404">Games with such platform id was not found</response>
         [ProducesResponseType(typeof(IEnumerable<BLGame>), 200)]
         [ProducesResponseType(404)]
         [HttpGet]
-        [Route("platform/{platformid}")]
-        public async Task<IActionResult> GetByPlatform(int id)
+        [Route("platform/{platformId}")]
+        public async Task<IActionResult> GetByPlatform(int platformId)
         {
-            IEnumerable<BLGame> games = await _gameService.GetGamesByPlatformAsync(id);
+            IEnumerable<BLGame> games = await _gameService.GetGamesByPlatformAsync(platformId);
             if (games?.Count() == 0)
                 return NotFound();
             else
                 return Ok(games);
         }
 
-        /// <returns>Game models wich has choosed platform</returns>
+        /// <returns>Game models witch has chose platform</returns>
         /// <response code="200">Games with such platform id exist</response>
         /// <response code="404">Games with such id was not found</response>
         [ProducesResponseType(typeof(HttpResponse), 200)]

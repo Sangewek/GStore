@@ -23,7 +23,7 @@ namespace GameStore.WebApi.Controllers
         /// <returns>Added publisher model and result of adding</returns>
         /// <param name="publisher"></param>
         /// <response code="201">Returns succeeded created model</response>
-        /// <response code="400">Recived model is not valid</response>
+        /// <response code="400">Received model is not valid</response>
         [ProducesResponseType(typeof(BLPublisher), 201)]
         [ProducesResponseType(400)]
         [HttpPost]
@@ -40,8 +40,8 @@ namespace GameStore.WebApi.Controllers
         /// <param name="id"></param>
         /// <param name="publisher"></param>
         /// <response code="200">Returns succeeded updated model</response>
-        /// <response code="404">Recived model is not found in database</response>
-        /// <response code="400">Recived model is not valid</response>
+        /// <response code="404">Received model is not found in database</response>
+        /// <response code="400">Received model is not valid</response>
         [ProducesResponseType(typeof(BLPublisher), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
@@ -79,7 +79,7 @@ namespace GameStore.WebApi.Controllers
 
         /// <returns>All publishers models</returns>
         /// <response code="200">Returns all publishers collection</response>
-        /// <response code="404">Genre modeils was not found in the database</response>
+        /// <response code="404">Genre models was not found in the database</response>
         [ProducesResponseType(typeof(IEnumerable<BLPublisher>), 200)]
         [ProducesResponseType(404)]
         [HttpGet]

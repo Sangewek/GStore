@@ -16,9 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Microsoft.EntityFrameworkCore">
-      <HintPath>..\..\\Microsoft.EntityFrameworkCore.dll</HintPath>
-    </Reference>
+
   </ItemGroup>
 
 </Project>
