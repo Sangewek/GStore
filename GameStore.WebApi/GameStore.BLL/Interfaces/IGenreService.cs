@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameStore.BLL.Interfaces
 {
-    public interface IGenreService: IService
+    public interface IGenreService: IDisposable
     {
         Task AddAsync(BLGenre genre);
         Task UpdateAsync(BLGenre genre);

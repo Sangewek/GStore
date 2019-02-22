@@ -15,11 +15,5 @@ namespace GameStore.DAL.Repositories
         public GameRepository(IDataContext db) : base(db)
         {
         }
-
-        public async Task<Game> GetGameGenres(int id)
-        {
-            return await Db.Set<Game>().Include(x => x.GameGenres).FirstAsync(x => x.Id == id);
-        }
-
     }
 }

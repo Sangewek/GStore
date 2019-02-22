@@ -15,11 +15,5 @@ namespace GameStore.DAL.Repositories
         public PlatformRepository(IDataContext db) : base(db)
         {
         }
-
-
-        public async Task<Platform> GetPlatformWithGames(int id)
-        {
-            return await Db.Set<Platform>().Include(x => x.GamePlatform).FirstAsync(x => x.Id == id);
-        }
     }
 }

@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GameStore.BLL.Interfaces;
 using GameStore.BLL.Infrastructure;
 using GameStore.BLL.Mapper;
-using GameStore.BLL.Services;
+using GameStore.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace GameStore.WebApi
 {
@@ -21,7 +19,14 @@ namespace GameStore.WebApi
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            InjectionResolver.ConfigurateInjections(services);
+            string projectPath = AppDomain.CurrentDomain.BaseDirectory.Split(new String[] { @"bin\" }, StringSplitOptions.None)[0] + "Properties";
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+            .SetBasePath(projectPath)
+            .AddJsonFile("appsettings.json")
+            .Build();
+            string connectionString = configuration.GetConnectionString("DefaultConnection");
+
+            InjectionResolver.ConfigurateInjections(services, connectionString);
 
             services.AddMvc().AddJsonOptions(option =>
          option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
@@ -34,6 +39,21 @@ namespace GameStore.WebApi
                     Title = "GameStore",
                     Description = "ASP.NET Core Web API"
                 });
+            });
+            services.AddSwaggerGen();
+
+            services.AddMvc(
+                config =>
+                {
+                    config.Filters.Add(new ActionFilters());
+                });
+
+            services.ConfigureSwaggerGen(options =>
+            {
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+
+                var xmlPath = Path.Combine(basePath, "GameStore.WebApi.xml");
+                options.IncludeXmlComments(xmlPath);
             });
         }
 
@@ -49,6 +69,8 @@ namespace GameStore.WebApi
             {
                 config.AddProfile<MapToBLModels>();
             });
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

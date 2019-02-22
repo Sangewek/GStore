@@ -18,7 +18,7 @@ namespace GameStore.DAL.Interfaces
 
         Task DeleteAsync(int? id);
 
-        //Task SaveAsync();
+        Task<T> SelectByIdAsync(int id, params Expression<Func<T, object>>[] includes);
 
         Task<IEnumerable<T>> SelectAllAsync(Expression<Func<T, bool>> predicate);
     }

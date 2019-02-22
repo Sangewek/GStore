@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace GameStore.BLL.Interfaces
 {
-    public interface ICommentService:IService
+    public interface ICommentService:IDisposable
     {
         Task AddAsync(BLComment comment);
         Task<IEnumerable<BLComment>> GetCommentsForPostAsync(int id);
         Task DeleteAsync(int id);
+        Task<BLComment> GetById(int id);
     }
 }

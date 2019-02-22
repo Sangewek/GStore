@@ -8,12 +8,6 @@ namespace GameStore.DAL.Interfaces
 {
     public interface IUnitOfWork: IDisposable
     {
-        ICommentRepository Comments { get; }
-        IGameRepository Games { get; }
-        IGenreRepository Genres { get; }
-        IPlatformRepository Platforms { get; }
-        IPublisherRepository Publishers { get; }
-
         Task SaveAsync();
     }
 }

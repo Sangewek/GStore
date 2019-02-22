@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using GameStore.DAL.Models.Base;
 
 namespace GameStore.DAL.Models
 {
-    public class Genre
+    public class Genre : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
         [ForeignKey("BaseGenre")]

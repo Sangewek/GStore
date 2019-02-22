@@ -8,6 +8,5 @@ namespace GameStore.DAL.Interfaces.Repositories
 {
     public interface IGameRepository:IRepository<Game>
     {
-        Task<Game> GetGameGenres(int id);
     }
 }

@@ -8,7 +8,5 @@ namespace GameStore.DAL.Interfaces.Repositories
 {
     public interface IPlatformRepository: IRepository<Platform>
     {
-         Task<Platform> GetPlatformWithGames(int id);
-
     }
 }

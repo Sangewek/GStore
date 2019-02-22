@@ -3,71 +3,86 @@ using GameStore.BLL.Models;
 using GameStore.DAL.Interfaces.Repositories;
 using GameStore.DAL.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.DAL.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 
 namespace GameStore.BLL.Services
 {
-    public class GameService : BaseService,IGameService
+    public class GameService : BaseService<BLGame,Game>,IGameService
     {
-        public GameService(IUnitOfWork unitOfWork) : base(unitOfWork)
+        private readonly IGameRepository _gameRepository;
+        private readonly IPlatformRepository _platformRepository;
+
+        public GameService(IUnitOfWork unitOfWork,IGameRepository gameRepository, IPlatformRepository platformRepository) : base(unitOfWork)
         {
+            _gameRepository = gameRepository;
+            _platformRepository = platformRepository;
         }
 
         public async Task AddAsync(BLGame game)
         {
-            await UnitOfWork.Games.InsertAsync(AutoMapper.Mapper.Map<BLGame, Game>(game));
+            if (game == null || game.PublisherId <= 0 || game.Name.Length == 0 )
+                throw new ArgumentException("Wrong game model");
+
+            await _gameRepository.InsertAsync(ToDalEntity(game));
             await UnitOfWork.SaveAsync();
         }
 
         public async Task UpdateAsync(BLGame game)
         {
-            await UnitOfWork.Games.UpdateAsync(AutoMapper.Mapper.Map<BLGame, Game>(game));
+            if (game == null || game.PublisherId <= 0 || game.Name.Length == 0 || game.Id<=0)
+                throw new ArgumentException("Wrong game model");
+
+            await _gameRepository.UpdateAsync(ToDalEntity(game));
             await UnitOfWork.SaveAsync();
         }
 
         public async Task<BLGame> GetAsync(int id)
         {
-            Game game = await UnitOfWork.Games.SelectByIdAsync(id);
-            return AutoMapper.Mapper.Map<Game,BLGame>(game);
+            Game game = await _gameRepository.SelectByIdAsync(id);
+            return ToBlEntity(game);
         }
 
         public async Task<IEnumerable<BLGenre>> GetGenresByGameAsync(int id)
         {
-            Game game = await UnitOfWork.Games.GetGameGenres(id);
-            List<Genre> genres = new List<Genre>();
+            Game game = await _gameRepository.SelectByIdAsync(id);
 
-            foreach (var genre in game.GameGenres)
-                genres.Add(await UnitOfWork.Genres.SelectByIdAsync(genre.GenreId));
-
-            return AutoMapper.Mapper.Map<IEnumerable<Genre>, IEnumerable<BLGenre>>(genres);
+            return ToBlEntity(game).Genres;
         }
 
         public async Task<IEnumerable<BLGame>> GetGamesByPlatformAsync(int id)
         {
-            Platform platform = await UnitOfWork.Platforms.GetPlatformWithGames(id);
-            List<Game> games = new List<Game>();
-
-            foreach (var game in platform.GamePlatform)
-                games.Add(await UnitOfWork.Games.SelectByIdAsync(game.GameId));
-
-            return AutoMapper.Mapper.Map<IEnumerable<Game>, IEnumerable<BLGame>>(games);
+            Platform platform = await _platformRepository.SelectByIdAsync(id, x => x.GamePlatform);
+            var games = BaseService<BLPlatform, Platform>.ToBlEntity(platform).Games;
+            return games;
         }
 
         public async Task<IEnumerable<BLGame>> GetAllAsync()
         {
-            return AutoMapper.Mapper.Map < IEnumerable <Game>,IEnumerable<BLGame>>(
-                await UnitOfWork.Games.SelectAllAsync());
+            return ToBlEntity(
+                await _gameRepository.SelectAllAsync());
         }
 
         public async Task DeleteAsync(int id)
         {
-            await UnitOfWork.Games.DeleteAsync(id);
+            if(await _gameRepository.SelectByIdAsync(id)!=null)
+            await _gameRepository.DeleteAsync(id);
             await UnitOfWork.SaveAsync();
+        }
+
+        public async Task<string> DownloadGame(int id)
+        {
+            return (await _gameRepository.SelectByIdAsync(id)).Name.Replace(" ","_");
         }
     }
 }

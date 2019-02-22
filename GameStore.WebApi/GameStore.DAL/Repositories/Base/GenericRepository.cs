@@ -7,10 +7,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using GameStore.DAL.Models.Base;
 
 namespace GameStore.DAL.Repositories
 {
-    public abstract class GenericRepository<T> : IRepository<T> where T :class
+    public abstract class GenericRepository<T> : IRepository<T> where T :BaseEntity
     {
         protected readonly IDataContext Db;
 
@@ -50,6 +51,13 @@ namespace GameStore.DAL.Repositories
         }
 
 
+        public async Task<T> SelectByIdAsync(int id, params Expression<Func<T, object>>[] includes)
+        {
+            if (includes != null && includes.Length > 0)
+                 includes.ToList().ForEach(y=>Db.Set<T>().Include(y));
+
+            return await Db.Set<T>().FirstAsync(x => x.Id == id);
+        }
 
         public virtual async Task InsertAsync(T user)
         {
