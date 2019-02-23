@@ -13,18 +13,20 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using GameStore.BLL.Models.NavigationModels;
 using GameStore.DAL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 
 namespace GameStore.BLL.Services
 {
-    public class GameService : BaseService<BLGame,Game>,IGameService
+    public class GameService : BaseService<BLGame, Game>, IGameService
     {
         private readonly IGameRepository _gameRepository;
         private readonly IPlatformRepository _platformRepository;
 
-        public GameService(IUnitOfWork unitOfWork,IGameRepository gameRepository, IPlatformRepository platformRepository) : base(unitOfWork)
+        public GameService(IUnitOfWork unitOfWork, IGameRepository gameRepository,
+            IPlatformRepository platformRepository) : base(unitOfWork)
         {
             _gameRepository = gameRepository;
             _platformRepository = platformRepository;
@@ -32,17 +34,18 @@ namespace GameStore.BLL.Services
 
         public async Task AddAsync(BLGame game)
         {
-            if (game == null || game.PublisherId <= 0 || game.Name.Length == 0 )
+            if (game == null || game.PublisherId <= 0 || game.Name.Length == 0)
                 throw new ArgumentException("Wrong game model");
 
-            game.DateOfAddition = DateTime.Now;;
+            game.DateOfAddition = DateTime.Now;
+            ;
             await _gameRepository.InsertAsync(ToDalEntity(game));
             await UnitOfWork.SaveAsync();
         }
 
         public async Task UpdateAsync(BLGame game)
         {
-            if (game == null || game.PublisherId <= 0 || game.Name.Length == 0 || game.Id<=0)
+            if (game == null || game.PublisherId <= 0 || game.Name.Length == 0 || game.Id <= 0)
                 throw new ArgumentException("Wrong game model");
 
             await _gameRepository.UpdateAsync(ToDalEntity(game));
@@ -77,34 +80,32 @@ namespace GameStore.BLL.Services
 
         public async Task DeleteAsync(int id)
         {
-            if(await _gameRepository.SelectByIdAsync(id)!=null)
-            await _gameRepository.DeleteAsync(id);
+            if (await _gameRepository.SelectByIdAsync(id) != null)
+                await _gameRepository.DeleteAsync(id);
             await UnitOfWork.SaveAsync();
         }
 
         public async Task<string> DownloadGame(int id)
         {
-            return (await _gameRepository.SelectByIdAsync(id)).Name.Replace(" ","_");
+            return (await _gameRepository.SelectByIdAsync(id)).Name.Replace(" ", "_");
         }
 
-        public async Task<IEnumerable<BLGame>> NavigateByGames()
+        public IEnumerable<BLGame> NavigateByGames(GamesFiltersModel filters,
+            GamesPagingModel gamesPaging)
         {
-            Expression<Func<Game, bool>> predicate1 = x =>
-                x.GamePlatform.Any(y => y.PlatformId == 2);
-            ;
-            Expression<Func<Game, bool>> predicate2 = x => x.GameGenres.Any(y=>y.GenreId==2);
-            Expression<Func<Game, bool>> predicate3 = x => x.Name.Contains("Asp");
-            var param = Expression.Parameter(typeof(Game), "x");
-            var body = Expression.AndAlso(
-                Expression.Invoke(predicate1, param),
-                Expression.Invoke(predicate2, param)
-            );
-            body = Expression.AndAlso(
-                body,
-                Expression.Invoke(predicate3, param));
-            var lambda = Expression.Lambda<Func<Game, bool>>(body, param);
+            if (filters == null || gamesPaging == null)
+                throw new ArgumentException("Wrong filter or paging model");
 
-            return ToBlEntity(await _gameRepository.SelectAllAsync(lambda));
+            var filterExpression = NavigationGameService.GetFilterExpression(filters, gamesPaging);
+            Expression<Func<Game, object>> sortByExpression = NavigationGameService.GetExpressionForSorting(filters.SortBy);
+
+            List<Game> games = (_gameRepository.GetGamesByNavigation(filterExpression, sortByExpression,
+                gamesPaging.ToSkip, gamesPaging.ToTake)).ToList();
+
+            if (filters.SortBy == SortByType.PriceDesc || filters.SortBy == SortByType.MostCommented)
+                games.Reverse();
+
+            return ToBlEntity(games);
         }
     }
 }

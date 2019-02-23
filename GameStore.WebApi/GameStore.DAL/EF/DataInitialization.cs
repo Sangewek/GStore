@@ -130,7 +130,7 @@ namespace GameStore.DAL.EF
                     new Comment {Body = "Comment For Asphalt", GameId = 2, Name = "Vasya"},
                     new Comment
                     {
-                        Body = "Answer for Comment For GTA V", GameId = 2, Name = "Vasya", ParentCommentId=1
+                        Body = "Answer for Comment For GTA V", GameId = 1, Name = "Vasya", ParentCommentId=1
                     }
 
                 };

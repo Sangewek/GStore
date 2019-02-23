@@ -9,6 +9,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using GameStore.WebApi.Mapper;
 using Microsoft.Extensions.PlatformAbstractions;
 
 namespace GameStore.WebApi
@@ -68,6 +69,7 @@ namespace GameStore.WebApi
             AutoMapper.Mapper.Initialize(config =>
             {
                 config.AddProfile<MapToBLModels>();
+                config.AddProfile<MapToViewModels>();
             });
 
             app.UseMiddleware<ExceptionMiddleware>();

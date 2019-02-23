@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GameStore.BLL.Interfaces;
 using GameStore.BLL.Models;
+using GameStore.WebApi.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -73,7 +74,7 @@ namespace GameStore.WebApi.Controllers
             BLGenre genre = await _genreService.GetAsync(id);
             if (genre?.Name == null)
                 return NotFound();
-            return Ok(genre);
+            return Ok(AutoMapper.Mapper.Map<BLGenre, GenreViewModel>(genre));
         }
 
         /// <returns>All genres models</returns>
@@ -87,7 +88,7 @@ namespace GameStore.WebApi.Controllers
             IEnumerable<BLGenre> genres = await _genreService.GetAllAsync();
             if (genres?.Count() == 0)
                 return NotFound();
-            return Ok(genres);
+            return Ok(AutoMapper.Mapper.Map<IEnumerable<BLGenre>, IEnumerable<GenreViewModel>>(genres));
         }
 
         /// <returns>Result of deleting genre model by id</returns>
@@ -121,7 +122,7 @@ namespace GameStore.WebApi.Controllers
             IEnumerable<BLGame> games = await _genreService.GetGamesByGenreAsync(genreId);
             if (games?.Count() == 0)
                 return NotFound();
-            return Ok(games);
+            return Ok(AutoMapper.Mapper.Map<IEnumerable<BLGame>, IEnumerable<GameViewModel>>(games));
         }
     }
 }

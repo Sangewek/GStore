@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GameStore.WebApi</name>
+    </assembly>
+    <members>
+        <member name="M:GameStore.WebApi.Controllers.CommentsController.Get(System.Int32)">
+            <returns>collection of comments to post</returns>
+            <param name="gameId"></param>
+            <response code="200">Returns the collection of comments</response>
+            <response code="404">Comments of certain post was not found</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.CommentsController.Post(System.Int32,GameStore.BLL.Models.BLComment)">
+            <returns>Result of comment creation</returns>
+            <param name="gameId"></param>
+            <param name="comment"></param>
+            <response code="201">Adding a new comment to certain post</response>
+            <response code="400">Received comment model was not valid</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.CommentsController.AnswerToComment(System.Int32,System.Int32,GameStore.BLL.Models.BLComment)">
+            <returns>Result of comment deleting</returns>
+            <param name="gameId"></param>
+            <param name="commentId"></param>
+            <param name="comment"></param>
+            <response code="201">Adding a new comment to certain post as an answer to anouther comment</response>
+            <response code="400">Received comment model was not valid</response>
+            <response code="404">Parent comment was not found</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.CommentsController.Delete(System.Int32)">
+            <returns>Result of comment deleting</returns>
+            <param name="id"></param>
+            <response code="200">Deleted comment from post by post-id</response>
+            <response code="404">Comment was not found by received id</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.GamesController.Post(GameStore.BLL.Models.BLGame)">
+            <returns>Added game model and result of adding</returns>
+            <param name="game"></param>
+            <response code="201">Returns succeeded created model</response>
+            <response code="400">Received model is not valid</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.GamesController.Put(System.Int32,GameStore.BLL.Models.BLGame)">
+            <returns>Updated game model and result of adding</returns>
+            <param name="id"></param>
+            <param name="game"></param>
+            <response code="200">Returns succeeded updated model</response>
+            <response code="404">Received model is not found in database</response>
+            <response code="400">Received model is not valid</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.GamesController.Get(System.Int32)">
+            <returns>Certain game model by id</returns>
+            <param name="id"></param>
+            <response code="200">Returns succeeded created model</response>
+            <response code="404">Model with such id was not found</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.GamesController.GetAll">
+            <returns>All game models</returns>
+            <response code="200">Returns collection of all game models </response>
+            <response code="404">Game models was not found in the database</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.GamesController.Delete(System.Int32)">
+            <returns>Result of deleting game model by id</returns>
+            <response code="200">Game model was removed from database</response>
+            <response code="404">Game with such id was not found</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.GamesController.GetGenres(System.Int32)">
+            <returns>Genres of certain game</returns>
+            <response code="200">Genres of certain game exist</response>
+            <response code="404">Game has no genres</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.GamesController.GetByPlatform(System.Int32)">
+            <returns>Game models witch has chose platform</returns>
+            <response code="200">Games with such platform id exist</response>
+            <response code="404">Games with such platform id was not found</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.GamesController.DownloadGame(System.Int32)">
+            <returns>Game models witch has chose platform</returns>
+            <response code="200">Games with such platform id exist</response>
+            <response code="404">Games with such id was not found</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.GamesController.NavigateByGames(System.String[],System.String[],System.String[],System.String,System.Int32,System.Int32,System.String,System.Int32,System.Int32)">
+            <returns>All game models</returns>
+            <response code="200">Returns collection of all game models </response>
+            <response code="404">Game models was not found in the database</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.GenresController.Post(GameStore.BLL.Models.BLGenre)">
+            <returns>Added genre model and result of adding</returns>
+            <param name="genre"></param>
+            <response code="201">Returns succeeded created model</response>
+            <response code="400">Received model is not valid</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.GenresController.Put(System.Int32,GameStore.BLL.Models.BLGenre)">
+            <returns>Updated genre model and result of adding</returns>
+            <param name="id"></param>
+            <param name="genre"></param>
+            <response code="200">Returns succeeded updated model</response>
+            <response code="404">Received model is not found in database</response>
+            <response code="400">Received model is not valid</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.GenresController.Get(System.Int32)">
+            <returns>Certain genre model by id</returns>
+            <param name="id"></param>
+            <response code="200">Returns succeeded created model</response>
+            <response code="404">Model with such id was not found</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.GenresController.Get">
+            <returns>All genres models</returns>
+            <response code="200">Returns all genres collection</response>
+            <response code="404">Genre models was not found in the database</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.GenresController.Delete(System.Int32)">
+            <returns>Result of deleting genre model by id</returns>
+            <response code="200">Genre model was removed from database</response>
+            <response code="404">Genre with such id was not found</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.GenresController.GetGamesByGenre(System.Int32)">
+            <returns>Games of certain genre</returns>
+            <response code="200">Games of certain genre exist</response>
+            <response code="404">Genre has no games</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.PublisherController.Post(GameStore.BLL.Models.BLPublisher)">
+            <returns>Added publisher model and result of adding</returns>
+            <param name="publisher"></param>
+            <response code="201">Returns succeeded created model</response>
+            <response code="400">Received model is not valid</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.PublisherController.Put(System.Int32,GameStore.BLL.Models.BLPublisher)">
+            <returns>Updated publisher model and result of adding</returns>
+            <param name="id"></param>
+            <param name="publisher"></param>
+            <response code="200">Returns succeeded updated model</response>
+            <response code="404">Received model is not found in database</response>
+            <response code="400">Received model is not valid</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.PublisherController.Get(System.Int32)">
+            <returns>Certain publisher model by id</returns>
+            <param name="id"></param>
+            <response code="200">Returns succeeded created model</response>
+            <response code="404">Model with such id was not found</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.PublisherController.Get">
+            <returns>All publishers models</returns>
+            <response code="200">Returns all publishers collection</response>
+            <response code="404">Genre models was not found in the database</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.PublisherController.Delete(System.Int32)">
+            <returns>Result of deleting publisher model by id</returns>
+            <response code="200">Publisher model was removed from database</response>
+            <response code="404">Publisher with such id was not found</response>
+        </member>
+        <member name="M:GameStore.WebApi.Controllers.PublisherController.GetGamesByPublisher(System.Int32)">
+            <returns>Games of certain publisher</returns>
+            <response code="200">Games of certain publisher exist</response>
+            <response code="404">Publisher has no games</response>
+        </member>
+    </members>
+</doc>

@@ -12,13 +12,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GameStore.DAL.Repositories
 {
-    public class GameRepository : GenericRepository<Game>,IGameRepository
+    public class GameRepository : GenericRepository<Game>, IGameRepository
     {
         public GameRepository(IDataContext db) : base(db)
         {
         }
 
-        public IEnumerable<Game> GetGamesByNavigation(Expression<Func<Game,bool>> filter,Expression<Func<Game,bool>> orderBy,
+        public IEnumerable<Game> GetGamesByNavigation(Expression<Func<Game, bool>> filter, Expression<Func<Game, object>> orderBy,
             int skip, int take)
         {
             return Db.Set<Game>().Where(filter).Skip(skip).Take(take).OrderBy(orderBy);

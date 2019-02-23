@@ -12,7 +12,7 @@ namespace GameStore.BLL.Models
 
         public SortByType SortBy { get; private set; }
 
-        public int PriceForm { get; private set; }
+        public int PriceFrom { get; private set; }
         public int PriceTo { get; private set; }
 
         public string PartOfName { get; private set; }
@@ -28,24 +28,17 @@ namespace GameStore.BLL.Models
         public void OrderBy(string type)
         {
             SortByType result = SortByType.Newest;
-            try
-            {
-                Enum.TryParse(type, true, out result);
-            }
-            catch (ArgumentException)
-            {
-                return;
-            }
+            // not available to use SortBy as out parameter
+            Enum.TryParse(type, true, out result);
             SortBy = result;
         }
 
         public void SetPriceRange(int from, int to)
         {
             if (from >= 0)
-                PriceForm = from;
+                PriceFrom = from;
             if (to >= 0 && to > from)
                 PriceTo = to;
-
         }
 
         public void FindByNamePart(string name)
@@ -53,9 +46,7 @@ namespace GameStore.BLL.Models
             if (name != null && name.Length > 2)
                 PartOfName = name;
         }
-
     }
-
 
     public enum SortByType
     {

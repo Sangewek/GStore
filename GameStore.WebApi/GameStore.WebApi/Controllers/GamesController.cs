@@ -8,6 +8,8 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using GameStore.BLL.Interfaces;
 using GameStore.BLL.Models;
+using GameStore.BLL.Models.NavigationModels;
+using GameStore.WebApi.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -79,7 +81,7 @@ namespace GameStore.WebApi.Controllers
             if (game?.Name == null)
                 return NotFound();
             else
-                return Ok(game);
+                return Ok(AutoMapper.Mapper.Map<BLGame,GameViewModel>(game));
         }
 
         /// <returns>All game models</returns>
@@ -94,7 +96,7 @@ namespace GameStore.WebApi.Controllers
             if (games?.Count() == 0)
                 return NotFound();
             else
-                return Ok(games);
+                return Ok(AutoMapper.Mapper.Map<IEnumerable<BLGame>,IEnumerable<GameViewModel>>(games));
         }
 
         /// <returns>Result of deleting game model by id</returns>
@@ -126,7 +128,7 @@ namespace GameStore.WebApi.Controllers
             if (genres?.Count() == 0)
                 return NotFound();
             else
-                return Ok(genres);
+                return Ok(AutoMapper.Mapper.Map<IEnumerable<BLGenre>, IEnumerable<GenreViewModel>>(genres));
         }
 
         /// <returns>Game models witch has chose platform</returns>
@@ -142,7 +144,7 @@ namespace GameStore.WebApi.Controllers
             if (games?.Count() == 0)
                 return NotFound();
             else
-                return Ok(games);
+                return Ok(AutoMapper.Mapper.Map<IEnumerable<BLGame>, IEnumerable<GameViewModel>>(games));
         }
 
         /// <returns>Game models witch has chose platform</returns>
@@ -173,13 +175,35 @@ namespace GameStore.WebApi.Controllers
         [ProducesResponseType(404)]
         [HttpGet]
         [Route("navigation")]
-        public async Task<IActionResult> NavigateByGames()
+        public IActionResult NavigateByGames(string[] genres = null, string[] platforms = null, string[] publishers = null, string sortBy = "Newest",
+            int priceFrom = 0, int priceTo = 0, string partOfName = null, int pageNumber = 1, int amountToShow = 5)
         {
-            IEnumerable<BLGame> games = await _gameService.NavigateByGames();
-            if (games?.Count() == 0)
-                return NotFound();
-            else
-                return Ok(games);
+            GamesFiltersModel filters = new GamesFiltersModel();
+            GamesPagingModel pages = new GamesPagingModel();
+
+            if (genres != null && genres.Length > 0)
+                foreach (var genre in genres)
+                    filters.Genres.Add(genre);
+
+            if (platforms != null && platforms.Length > 0)
+                foreach (var platform in platforms)
+                    filters.Platforms.Add(platform);
+
+            if (publishers != null && publishers.Length > 0)
+                foreach (var publisher in publishers)
+                    filters.Publishers.Add(publisher);
+
+            filters.OrderBy(sortBy);
+            filters.SetPriceRange(priceFrom,priceTo);
+
+            if(partOfName!=null)
+                filters.FindByNamePart(partOfName);
+
+            pages.ToTake = amountToShow;
+            pages.PageNumber = pageNumber;
+
+            IEnumerable<BLGame> games = _gameService.NavigateByGames(filters, pages);
+            return Ok(AutoMapper.Mapper.Map<IEnumerable<BLGame>,IEnumerable<GameViewModel>>(games));
         }
     }
 }
