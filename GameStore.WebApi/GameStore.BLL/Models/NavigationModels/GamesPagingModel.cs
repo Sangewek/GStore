@@ -68,5 +68,21 @@ namespace GameStore.BLL.Models.NavigationModels
                     _toTake = value;
             }
         }
+
+        public bool HasPreviousPage
+        {
+            get
+            {
+                return (_pageNumber > 1);
+            }
+        }
+
+        public bool HasNextPage
+        {
+            get
+            {
+                return (_pageNumber < TotalPages);
+            }
+        }
     }
 }

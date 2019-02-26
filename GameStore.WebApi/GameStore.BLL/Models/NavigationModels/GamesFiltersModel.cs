@@ -25,11 +25,11 @@ namespace GameStore.BLL.Models
             SortBy = SortByType.Newest;
         }
 
-        public void OrderBy(string type)
+        public void SetSortingBy(string type)
         {
-            SortByType result = SortByType.Newest;
-            // not available to use SortBy as out parameter
-            Enum.TryParse(type, true, out result);
+            if (!Enum.TryParse(type, true, out SortByType result))
+                return;
+
             SortBy = result;
         }
 

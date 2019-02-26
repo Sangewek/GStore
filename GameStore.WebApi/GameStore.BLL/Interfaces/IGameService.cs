@@ -20,7 +20,6 @@ namespace GameStore.BLL.Interfaces
         Task<IEnumerable<BLGame>> GetAllAsync();
         Task DeleteAsync(int id);
         Task<string> DownloadGame(int id);
-        IEnumerable<BLGame> NavigateByGames(GamesFiltersModel filters,
-            GamesPagingModel gamesPaging);
+        GamesNavigationModel NavigateByGames(GamesNavigationModel navigationModel);
     }
 }

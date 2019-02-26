@@ -77,7 +77,7 @@
             <response code="200">Games with such platform id exist</response>
             <response code="404">Games with such id was not found</response>
         </member>
-        <member name="M:GameStore.WebApi.Controllers.GamesController.NavigateByGames(System.String[],System.String[],System.String[],System.String,System.Int32,System.Int32,System.String,System.Int32,System.Int32)">
+        <member name="M:GameStore.WebApi.Controllers.GamesController.NavigateByGames(GameStore.WebApi.Navigation.GamesNavBind)">
             <returns>All game models</returns>
             <response code="200">Returns collection of all game models </response>
             <response code="404">Game models was not found in the database</response>

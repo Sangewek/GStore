@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using GameStore.BLL.Interfaces;
 using GameStore.BLL.Models;
 using GameStore.BLL.Models.NavigationModels;
+using GameStore.WebApi.Navigation;
 using GameStore.WebApi.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -171,39 +172,19 @@ namespace GameStore.WebApi.Controllers
         /// <returns>All game models</returns>
         /// <response code="200">Returns collection of all game models </response>
         /// <response code="404">Game models was not found in the database</response>
-        [ProducesResponseType(typeof(IEnumerable<BLGame>), 200)]
+        [ProducesResponseType(typeof(GamesNavViewModel), 200)]
         [ProducesResponseType(404)]
-        [HttpGet]
+        [HttpPost]
         [Route("navigation")]
-        public IActionResult NavigateByGames(string[] genres = null, string[] platforms = null, string[] publishers = null, string sortBy = "Newest",
-            int priceFrom = 0, int priceTo = 0, string partOfName = null, int pageNumber = 1, int amountToShow = 5)
+        public IActionResult NavigateByGames([FromBody] GamesNavBind navigationBind)
         {
-            GamesFiltersModel filters = new GamesFiltersModel();
-            GamesPagingModel pages = new GamesPagingModel();
+            GamesNavigationModel navigationModel = ValidationNavParams.ValidateNavigationBind(navigationBind);
+            navigationModel = _gameService.NavigateByGames(navigationModel);
 
-            if (genres != null && genres.Length > 0)
-                foreach (var genre in genres)
-                    filters.Genres.Add(genre);
+            GamesNavViewModel gamesNavViewModel = new GamesNavViewModel {Pages = navigationModel.PagesInfo,Filters = navigationModel.Filters};
+            gamesNavViewModel.Games = AutoMapper.Mapper.Map<IEnumerable<BLGame>, IEnumerable<GameViewModel>>(navigationModel.SelectedGames);
 
-            if (platforms != null && platforms.Length > 0)
-                foreach (var platform in platforms)
-                    filters.Platforms.Add(platform);
-
-            if (publishers != null && publishers.Length > 0)
-                foreach (var publisher in publishers)
-                    filters.Publishers.Add(publisher);
-
-            filters.OrderBy(sortBy);
-            filters.SetPriceRange(priceFrom,priceTo);
-
-            if(partOfName!=null)
-                filters.FindByNamePart(partOfName);
-
-            pages.ToTake = amountToShow;
-            pages.PageNumber = pageNumber;
-
-            IEnumerable<BLGame> games = _gameService.NavigateByGames(filters, pages);
-            return Ok(AutoMapper.Mapper.Map<IEnumerable<BLGame>,IEnumerable<GameViewModel>>(games));
+            return Ok(gamesNavViewModel);
         }
     }
 }

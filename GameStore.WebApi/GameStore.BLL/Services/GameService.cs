@@ -38,7 +38,7 @@ namespace GameStore.BLL.Services
                 throw new ArgumentException("Wrong game model");
 
             game.DateOfAddition = DateTime.Now;
-            ;
+
             await _gameRepository.InsertAsync(ToDalEntity(game));
             await UnitOfWork.SaveAsync();
         }
@@ -90,22 +90,24 @@ namespace GameStore.BLL.Services
             return (await _gameRepository.SelectByIdAsync(id)).Name.Replace(" ", "_");
         }
 
-        public IEnumerable<BLGame> NavigateByGames(GamesFiltersModel filters,
-            GamesPagingModel gamesPaging)
+        public GamesNavigationModel NavigateByGames(GamesNavigationModel navigationModel)
         {
-            if (filters == null || gamesPaging == null)
+            if (navigationModel.Filters == null || navigationModel.PagesInfo == null)
                 throw new ArgumentException("Wrong filter or paging model");
 
-            var filterExpression = NavigationGameService.GetFilterExpression(filters, gamesPaging);
-            Expression<Func<Game, object>> sortByExpression = NavigationGameService.GetExpressionForSorting(filters.SortBy);
+            var filterExpression = NavigationGameService.GetFilterExpression(navigationModel.Filters, navigationModel.PagesInfo);
+            Expression<Func<Game, object>> sortByExpression = NavigationGameService.GetExpressionForSorting(navigationModel.Filters.SortBy);
 
             List<Game> games = (_gameRepository.GetGamesByNavigation(filterExpression, sortByExpression,
-                gamesPaging.ToSkip, gamesPaging.ToTake)).ToList();
+                navigationModel.PagesInfo.ToSkip, navigationModel.PagesInfo.ToTake)).ToList();
 
-            if (filters.SortBy == SortByType.PriceDesc || filters.SortBy == SortByType.MostCommented)
+            if (navigationModel.Filters.SortBy == SortByType.PriceDesc || navigationModel.Filters.SortBy == SortByType.MostCommented)
                 games.Reverse();
 
-            return ToBlEntity(games);
+            navigationModel.SelectedGames = ToBlEntity(games);
+            navigationModel.PagesInfo.ItemsAmount = games.Count;
+
+            return navigationModel;
         }
     }
 }
