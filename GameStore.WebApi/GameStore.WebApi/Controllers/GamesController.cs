@@ -169,20 +169,29 @@ namespace GameStore.WebApi.Controllers
         }
 
 
-        /// <returns>All game models</returns>
-        /// <response code="200">Returns collection of all game models </response>
-        /// <response code="404">Game models was not found in the database</response>
+        /// <returns>Navigation model with chosen games</returns>
+        /// <response code="200">Returns navigation model according passed params with collection of chosen game models</response>
+        /// <response code="400">Navigation parameters is invalid</response>
         [ProducesResponseType(typeof(GamesNavViewModel), 200)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(400)]
         [HttpPost]
         [Route("navigation")]
         public IActionResult NavigateByGames([FromBody] GamesNavBind navigationBind)
         {
-            GamesNavigationModel navigationModel = ValidationNavParams.ValidateNavigationBind(navigationBind);
+            GamesNavigationModel navigationModel = ValidationNavParams.ValidateNavigationBind(navigationBind, ModelState);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             navigationModel = _gameService.NavigateByGames(navigationModel);
 
-            GamesNavViewModel gamesNavViewModel = new GamesNavViewModel {Pages = navigationModel.PagesInfo,Filters = navigationModel.Filters};
-            gamesNavViewModel.Games = AutoMapper.Mapper.Map<IEnumerable<BLGame>, IEnumerable<GameViewModel>>(navigationModel.SelectedGames);
+            GamesNavViewModel gamesNavViewModel = new GamesNavViewModel
+            {
+                Pages = navigationModel.PagesInfo,
+                Filters = navigationModel.Filters,
+                Games = AutoMapper.Mapper.Map<IEnumerable<BLGame>, IEnumerable<GameViewModel>>(navigationModel
+                    .SelectedGames)
+            };
 
             return Ok(gamesNavViewModel);
         }
