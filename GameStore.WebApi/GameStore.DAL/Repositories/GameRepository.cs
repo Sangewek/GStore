@@ -23,5 +23,10 @@ namespace GameStore.DAL.Repositories
         {
             return Db.Set<Game>().Where(filter).Skip(skip).Take(take).OrderBy(orderBy);
         }
+
+        public int CountAllGames(Expression<Func<Game, bool>> filter)
+        {
+            return Db.Set<Game>().Where(filter).Count();
+        }
     }
 }

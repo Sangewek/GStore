@@ -12,5 +12,7 @@ namespace GameStore.DAL.Interfaces.Repositories
         IEnumerable<Game> GetGamesByNavigation(Expression<Func<Game, bool>> filter,
             Expression<Func<Game,object>> orderBy,
             int skip, int take);
+
+        int CountAllGames(Expression<Func<Game, bool>> filter);
     }
 }

@@ -105,7 +105,7 @@ namespace GameStore.BLL.Services
                 games.Reverse();
 
             navigationModel.SelectedGames = ToBlEntity(games);
-            navigationModel.PagesInfo.ItemsAmount = games.Count;
+            navigationModel.PagesInfo.ItemsAmount = _gameRepository.CountAllGames(filterExpression);
 
             return navigationModel;
         }

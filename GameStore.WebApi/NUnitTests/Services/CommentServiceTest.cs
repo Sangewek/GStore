@@ -55,7 +55,7 @@ namespace GameStore.Tests.Services
         }
 
         [Test]
-        public async Task AddAsync_IncorrectComment_ThrowsEx()
+        public  void AddAsync_IncorrectComment_ThrowsEx()
         {
             //arrange
             BLComment comment = new BLComment() { Body = "Body", GameId = 1, Name = "" };
@@ -140,8 +140,5 @@ namespace GameStore.Tests.Services
             //assert
             _commentRepository.Verify(cs => cs.SelectByIdAsync(1));
         }
-
-
-
     }
 }

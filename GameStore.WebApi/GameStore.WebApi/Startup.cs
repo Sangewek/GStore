@@ -16,6 +16,8 @@ namespace GameStore.WebApi
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "AllowAllHeaders";
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -30,6 +32,8 @@ namespace GameStore.WebApi
             string connectionString = configuration.GetConnectionString("DefaultConnection");
 
             InjectionResolver.ConfigurateInjections(services, connectionString);
+
+            services.AddCors();
 
             services.AddMvc().AddJsonOptions(option =>
          option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
@@ -80,6 +84,14 @@ namespace GameStore.WebApi
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Test API V1");
+            });
+
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials();
             });
 
             app.UseMvc(routes =>
