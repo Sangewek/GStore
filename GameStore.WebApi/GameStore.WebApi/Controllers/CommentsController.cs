@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GameStore.BLL.Interfaces;
 using GameStore.BLL.Models;
+using GameStore.WebApi.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,7 +36,7 @@ namespace GameStore.WebApi.Controllers
             if (comments == null || !comments.Any())
                 return NotFound();
             else
-                return Ok(comments);
+                return Ok(AutoMapper.Mapper.Map<IEnumerable<BLComment>, IEnumerable<CommentViewModel>>(comments));
         }
 
         /// <returns>Result of comment creation</returns>

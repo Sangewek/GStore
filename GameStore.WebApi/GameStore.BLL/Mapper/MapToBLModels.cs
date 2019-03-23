@@ -27,6 +27,7 @@ namespace GameStore.BLL.Mapper
             CreateMap<Game, BLGame>().MaxDepth(1)
              .ForMember(dto => dto.Genres, opt => opt.MapFrom(x => x.GameGenres.Select(y => y.Genre).ToList())).MaxDepth(1)
              .ForMember(dto => dto.Platforms, opt => opt.MapFrom(x => x.GamePlatform.Select(y => y.Platform).ToList()))
+             .ForMember(dto => dto.Publisher, opt => opt.MapFrom(x => x.Publisher.Name))
             .ReverseMap();
         }
     }

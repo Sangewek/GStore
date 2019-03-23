@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GameStore.BLL.Interfaces;
 using GameStore.BLL.Models;
+using GameStore.WebApi.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -74,7 +75,7 @@ namespace GameStore.WebApi.Controllers
             if (publisher?.Name == null)
                 return NotFound();
             else
-                return Ok(publisher);
+                return Ok(AutoMapper.Mapper.Map<BLPublisher, PublisherViewModel>(publisher));
         }
 
         /// <returns>All publishers models</returns>
@@ -89,7 +90,7 @@ namespace GameStore.WebApi.Controllers
             if (publishers?.Count() == 0)
                 return NotFound();
             else
-                return Ok(publishers);
+                return Ok(AutoMapper.Mapper.Map<IEnumerable<BLPublisher>, IEnumerable<PublisherViewModel>>(publishers));
         }
 
         /// <returns>Result of deleting publisher model by id</returns>
@@ -119,7 +120,7 @@ namespace GameStore.WebApi.Controllers
             IEnumerable<BLGame> games = await _publisherService.GetGamesByPublisherAsync(publisherId);
             if (games?.Count() == 0)
                 return NotFound();
-            return Ok(games);
+            return Ok(AutoMapper.Mapper.Map<IEnumerable<BLGame>, IEnumerable<GameViewModel>>(games));
         }
     }
 }

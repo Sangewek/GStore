@@ -9,24 +9,31 @@ using Swashbuckle.AspNetCore.Swagger;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using GameStore.WebApi.Mapper;
 using Microsoft.Extensions.PlatformAbstractions;
 
 namespace GameStore.WebApi
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "AllowAllHeaders";
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            string projectPath = AppDomain.CurrentDomain.BaseDirectory.Split(new String[] { @"bin\" }, StringSplitOptions.None)[0] + "Properties";
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-            .SetBasePath(projectPath)
-            .AddJsonFile("appsettings.json")
-            .Build();
+            string projectPath = Directory.GetCurrentDirectory() + "\\Properties";
+
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(projectPath)
+                .AddJsonFile("appSettings.json")
+                .Build();
+
             string connectionString = configuration.GetConnectionString("DefaultConnection");
 
             InjectionResolver.ConfigurateInjections(services, connectionString);
+
+            services.AddCors();
 
             services.AddMvc().AddJsonOptions(option =>
          option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
@@ -68,6 +75,7 @@ namespace GameStore.WebApi
             AutoMapper.Mapper.Initialize(config =>
             {
                 config.AddProfile<MapToBLModels>();
+                config.AddProfile<MapToViewModels>();
             });
 
             app.UseMiddleware<ExceptionMiddleware>();
@@ -76,6 +84,14 @@ namespace GameStore.WebApi
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Test API V1");
+            });
+
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials();
             });
 
             app.UseMvc(routes =>

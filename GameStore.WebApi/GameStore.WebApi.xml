@@ -77,6 +77,11 @@
             <response code="200">Games with such platform id exist</response>
             <response code="404">Games with such id was not found</response>
         </member>
+        <member name="M:GameStore.WebApi.Controllers.GamesController.NavigateByGames(GameStore.WebApi.Navigation.GamesNavBind)">
+            <returns>Navigation model with chosen games</returns>
+            <response code="200">Returns navigation model according passed params with collection of chosen game models</response>
+            <response code="400">Navigation parameters is invalid</response>
+        </member>
         <member name="M:GameStore.WebApi.Controllers.GenresController.Post(GameStore.BLL.Models.BLGenre)">
             <returns>Added genre model and result of adding</returns>
             <param name="genre"></param>

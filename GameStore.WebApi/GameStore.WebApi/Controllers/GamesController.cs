@@ -8,6 +8,9 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using GameStore.BLL.Interfaces;
 using GameStore.BLL.Models;
+using GameStore.BLL.Models.NavigationModels;
+using GameStore.WebApi.Navigation;
+using GameStore.WebApi.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -79,7 +82,7 @@ namespace GameStore.WebApi.Controllers
             if (game?.Name == null)
                 return NotFound();
             else
-                return Ok(game);
+                return Ok(AutoMapper.Mapper.Map<BLGame,GameViewModel>(game));
         }
 
         /// <returns>All game models</returns>
@@ -94,7 +97,7 @@ namespace GameStore.WebApi.Controllers
             if (games?.Count() == 0)
                 return NotFound();
             else
-                return Ok(games);
+                return Ok(AutoMapper.Mapper.Map<IEnumerable<BLGame>,IEnumerable<GameViewModel>>(games));
         }
 
         /// <returns>Result of deleting game model by id</returns>
@@ -126,7 +129,7 @@ namespace GameStore.WebApi.Controllers
             if (genres?.Count() == 0)
                 return NotFound();
             else
-                return Ok(genres);
+                return Ok(AutoMapper.Mapper.Map<IEnumerable<BLGenre>, IEnumerable<GenreViewModel>>(genres));
         }
 
         /// <returns>Game models witch has chose platform</returns>
@@ -142,7 +145,7 @@ namespace GameStore.WebApi.Controllers
             if (games?.Count() == 0)
                 return NotFound();
             else
-                return Ok(games);
+                return Ok(AutoMapper.Mapper.Map<IEnumerable<BLGame>, IEnumerable<GameViewModel>>(games));
         }
 
         /// <returns>Game models witch has chose platform</returns>
@@ -163,6 +166,34 @@ namespace GameStore.WebApi.Controllers
             response.Headers.Add("content-disposition", "attachment;filename=" + $"{gameName}.bin");
             await response.SendFileAsync("Files/Game.bin");
             return Ok(response);
+        }
+
+
+        /// <returns>Navigation model with chosen games</returns>
+        /// <response code="200">Returns navigation model according passed params with collection of chosen game models</response>
+        /// <response code="400">Navigation parameters is invalid</response>
+        [ProducesResponseType(typeof(GamesNavViewModel), 200)]
+        [ProducesResponseType(400)]
+        [HttpPost]
+        [Route("navigation")]
+        public IActionResult NavigateByGames([FromBody] GamesNavBind navigationBind)
+        {
+            GamesNavigationModel navigationModel = ValidationNavParams.ValidateNavigationBind(navigationBind, ModelState);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            navigationModel = _gameService.NavigateByGames(navigationModel);
+
+            GamesNavViewModel gamesNavViewModel = new GamesNavViewModel
+            {
+                Pages = navigationModel.PagesInfo,
+                Filters = navigationModel.Filters,
+                Games = AutoMapper.Mapper.Map<IEnumerable<BLGame>, IEnumerable<GameViewModel>>(navigationModel
+                    .SelectedGames)
+            };
+
+            return Ok(gamesNavViewModel);
         }
     }
 }

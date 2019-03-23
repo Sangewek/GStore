@@ -81,6 +81,7 @@ namespace GameStore.DAL.EF
                         Name = "GTA V", Description = "GTA V Description", PublisherId=1,
                         GameGenres = new[] {new GameGenres {GameId = 1, GenreId = 1}},
                         GamePlatform = new[] {new GamePlatforms {GameId = 1, PlatformId = 2}}
+                        ,Price = 200,DateOfAddition = DateTime.Now
                     },
                     new Game
                     {
@@ -95,7 +96,8 @@ namespace GameStore.DAL.EF
                         {
                             new GamePlatforms {GameId = 2, PlatformId = 2},
                             new GamePlatforms {GameId = 2, PlatformId = 1},
-                        }
+                        },
+                        Price = 20, DateOfAddition = DateTime.Now
                     },
                     new Game
                     {
@@ -110,7 +112,8 @@ namespace GameStore.DAL.EF
                         {
                             new GamePlatforms {GameId = 2, PlatformId = 2},
                             new GamePlatforms {GameId = 2, PlatformId = 3},
-                        }
+                        },
+                        Price = 300, DateOfAddition = DateTime.Now
                     },
                 };
 
@@ -127,7 +130,7 @@ namespace GameStore.DAL.EF
                     new Comment {Body = "Comment For Asphalt", GameId = 2, Name = "Vasya"},
                     new Comment
                     {
-                        Body = "Answer for Comment For GTA V", GameId = 2, Name = "Vasya", ParentCommentId=1
+                        Body = "Answer for Comment For GTA V", GameId = 1, Name = "Vasya", ParentCommentId=1
                     }
 
                 };
@@ -136,140 +139,5 @@ namespace GameStore.DAL.EF
                 context.SaveChanges();
             }
         }
-        /*public static void Initialize(DataContext context)
-        {
-            if (!context.Genre.Any())
-            {
-                var genres = new[]
-                {
-                    new Genre
-                    {
-                        Name = "Strategy", SubGenres = new[]
-                        {
-                            new Genre {Name = "RTS"},
-                            new Genre {Name = "TBS"},
-                        }
-                    },
-                    new Genre {Name = "RPG"},
-                    new Genre {Name = "Sports"},
-                    new Genre
-                    {
-                        Name = "Races", SubGenres = new[]
-                        {
-                            new Genre {Name = "rally"},
-                            new Genre {Name = "arcade"},
-                            new Genre {Name = "formula"},
-                            new Genre {Name = "off-road"},
-                        }
-                    },
-                    new Genre
-                    {
-                        Name = "Action", SubGenres = new[]
-                        {
-                            new Genre {Name = "FPS"},
-                            new Genre {Name = "TPS"},
-                        }
-                    },
-                    new Genre {Name = "Adventure"},
-                    new Genre {Name = "Puzzle&Skill"},
-                    new Genre {Name = "Misc"},
-                };
-
-                context.Genre.AddRange(genres);
-                context.SaveChanges();
-            }
-
-            if (!context.Platform.Any())
-            {
-                var platforms = new[]
-                {
-                    new Platform {Name = "mobile"},
-                    new Platform {Name = "browser"},
-                    new Platform {Name = "desktop"},
-                    new Platform {Name = "console"}
-                };
-
-                context.Platform.AddRange(platforms);
-                context.SaveChanges();
-            }
-
-            if (!context.Publishers.Any())
-            {
-                var publishers = new[]
-                {
-                    new Publisher {Name = "Rockstar"},
-                    new Publisher {Name = "Gameloft"},
-                    new Publisher {Name = "Ubisoft"}
-                };
-
-                context.Publishers.AddRange(publishers);
-                context.SaveChanges();
-            }
-
-            if (!context.Games.Any())
-            {
-                var games = new[]
-                {
-                    new Game
-                    {
-                        Name = "GTA V", Description = "GTA V Description", Publisher = new Publisher {Id = 1},
-                        GameGenres = new[] {new GameGenres {GameId = 1, GenreId = 1}},
-                        GamePlatform = new[] {new GamePlatforms {GameId = 1, PlatformId = 2}}
-                    },
-                    new Game
-                    {
-                        Name = "Asphalt 5", Description = "Asphalt 5 Description", Publisher = new Publisher {Id = 2},
-                        GameGenres = new[]
-                        {
-                            new GameGenres {GameId = 1, GenreId = 1},
-                            new GameGenres {GameId = 1, GenreId = 2},
-                            new GameGenres {GameId = 1, GenreId = 4}
-                        },
-                        GamePlatform = new[]
-                        {
-                            new GamePlatforms {GameId = 2, PlatformId = 2},
-                            new GamePlatforms {GameId = 2, PlatformId = 1},
-                        }
-                    },
-                    new Game
-                    {
-                        Name = "Assassins Creed", Description = "Assassins Creed Description", Publisher = new Publisher {Id = 3},
-                        GameGenres = new[]
-                        {
-                            new GameGenres {GameId = 1, GenreId = 1},
-                            new GameGenres {GameId = 1, GenreId = 2},
-                            new GameGenres {GameId = 1, GenreId = 4}
-                        },
-                        GamePlatform = new[]
-                        {
-                            new GamePlatforms {GameId = 2, PlatformId = 2},
-                            new GamePlatforms {GameId = 2, PlatformId = 3},
-                        }
-                    },
-                };
-
-                context.Games.AddRange(games);
-                context.SaveChanges();
-            }
-
-            if (!context.Comments.Any())
-            {
-                var comments = new[]
-                {
-                    new Comment {Body = "Comment For GTA V", Game = new Game {Id = 1}, Name = "Vasya"},
-                    new Comment {Body = "Comment 2 For GTA V", Game = new Game {Id = 1}, Name = "Petya"},
-                    new Comment {Body = "Comment For Asphalt", Game = new Game {Id = 2}, Name = "Vasya"},
-                    new Comment
-                    {
-                        Body = "Answer for Comment For GTA V", Game = new Game {Id = 2}, Name = "Vasya",
-                    }
-
-                };
-
-                context.Comments.AddRange(comments);
-                context.SaveChanges();
-            }
-        }*/
-
     }
 }

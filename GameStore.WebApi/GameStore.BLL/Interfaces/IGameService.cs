@@ -5,6 +5,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using GameStore.BLL.Models.NavigationModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.BLL.Interfaces
@@ -19,5 +20,6 @@ namespace GameStore.BLL.Interfaces
         Task<IEnumerable<BLGame>> GetAllAsync();
         Task DeleteAsync(int id);
         Task<string> DownloadGame(int id);
+        GamesNavigationModel NavigateByGames(GamesNavigationModel navigationModel);
     }
 }

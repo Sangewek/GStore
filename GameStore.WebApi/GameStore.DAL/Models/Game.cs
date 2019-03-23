@@ -11,6 +11,8 @@ namespace GameStore.DAL.Models
     {
         public string Name { get; set; }
         public string Description { get; set; }
+        public DateTime DateOfAddition { get; set; }
+        public int Price { get; set; }
         public int PublisherId { get; set; }
 
         public virtual Publisher Publisher {get;set;}
